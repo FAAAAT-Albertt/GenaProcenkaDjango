@@ -1,0 +1,22 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link href="{% static '/css/login.css' %}" rel=" stylesheet" />
+</head>
+<body>
+    <h1>Вход на сайт</h1>
+    {% if error %}
+    <div style="color:red;">{{ error }}</div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input id="username" placeholder="Логин" type="text" name="username">
+        <input id="pass" placeholder="Пароль" type="password" name="password">
+        <input type="submit" value="Войти">
+    </form>
+</body>
+</html>

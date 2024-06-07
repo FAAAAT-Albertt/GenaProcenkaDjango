@@ -1,0 +1,283 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static '/css/dashboard.css' %}" rel="stylesheet" />
+    
+    <title>Styling Scrollbar</title>
+</head>
+<body>
+   <div class="dashboard">
+        <div class="checkbox">
+            <div class="name minName">
+                <p class="nameText">
+                    Деталь
+                </p>
+            </div>
+            
+            {% for key, value in details.items %}
+            <div class="item minName">
+                <p class="itemText">
+                    {{value.detail}}
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name minName">
+                <p class="nameText">
+                    Артикул
+                </p>
+            </div>
+
+            {% for key, value in details.items %}
+            <div class="item minName">
+                <p class="itemText">
+                    {{value.article}}
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name minName">
+                <p class="nameText">
+                    Цена
+                </p>
+            </div>
+
+            {% for key, value in details.items %}
+            <div class="item minName">
+                <p class="itemText">
+                    {{value.price}}
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name">
+                <p class="nameText">
+                    Закуп<br>Carreta.ru
+                </p>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div>
+            </div>
+            
+            {% for key, value in details.items %}
+            <div class="item minName" id="carreta_{{ value.article }}">
+                <p class="itemText">
+                    100000
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name">
+                <p class="nameText">
+                    Закуп<br>Amry.ru
+                </p>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div>
+            </div>
+           
+            {% for key, value in details.items %}
+            <div class="item minName" id="amry_{{ value.article }}"> 
+                <p class="itemText" >
+                    100000
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name">
+                <p class="nameText">
+                    Закуп<br>Armtek.ru
+                </p>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div>
+            </div>
+            
+            {% for key, value in details.items %}
+            <div class="item minName" id="armtek_{{ value.article }}">
+                <p class="itemText">
+                    100000
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name">
+                <p class="nameText">
+                    Розница<br>Emex.ru
+                </p>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div>
+            </div>
+           
+            {% for key, value in details.items %}
+            <div class="item minName" id="emex_{{ value.article }}">
+                <p class="itemText">
+                    0
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name">
+                <p class="nameText">
+                    Предложенная цена
+                </p>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div>
+            </div>
+           
+            {% for key, value in details.items %}
+            <div class="item minName" id="avg_{{ value.article }}">
+                <p class="itemText">
+                    -
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox">
+            <div class="name minName">
+                <p class="nameText">
+                    Изменить цену
+                </p>
+            </div>
+
+            {% for key, value in details.items %}
+            <div class="item minName">
+                <input class="itemText" type="text" placeholder="Введите сумму">
+            </div>
+            {% endfor %}
+
+        </div>
+   </div>
+   <div class="buttons">
+    <button class="btn">
+        Отменить фильтры
+    </button>
+    <div class="changeButton">
+        <button class="btnPrev">
+            <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+        </button>
+        <button class="btn btn-primary">
+            Отправить выгрузку
+        </button>
+        <button class="btnNext">
+            <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+        </button>
+    </div>
+    <button class="btn">
+        Применить фильтры
+    </button>
+   </div>
+   <script>
+    function changeSVG(event) {
+        var btn = event.currentTarget; // Получаем текущую кнопку
+        var img = btn.querySelector('img'); // Получаем изображение внутри кнопки   
+
+        if (img.src.endsWith('gala--settings.svg')) {
+            img.src = "{% static '/img/fluent--ios-arrow-24-filled.svg' %}";
+        } else {
+            img.src = "{% static '/img/gala--settings.svg' %}";
+        }
+    }
+    
+    var buttons = document.querySelectorAll('.filter');
+    buttons.forEach(function(button) {
+        button.addEventListener('click', changeSVG);
+    });
+
+    let socket = new WebSocket("ws://127.0.0.1:8000/ws_detail");
+
+    socket.onopen = function(e) {
+        console.log("[open] Соединение установлено");
+    };
+
+    socket.onmessage = function(event) {
+        var message = JSON.parse(event.data);
+        // Обновление цены колонки
+        var div_id = message.column + "_" + message.articul;
+        const elem = document.getElementById(div_id);
+        elem.innerText = message.price;
+        // *
+
+        console.log(`[message] Данные получены с сервера: ${event.data}`);
+        
+        // Получение всех цен из строки
+        var carreta = "carreta_" + message.articul;
+        var amry = "amry_" + message.articul;
+        var armtek = "armtek_" + message.articul;
+        const carreta_div =  document.getElementById(carreta);
+        const amry_div =  document.getElementById(amry);
+        const armtek_div =  document.getElementById(armtek);
+        
+        if (carreta_div != null) {
+            var carreta_price = parseFloat(carreta_div.innerText);
+        } else {
+            var carreta_price = parseFloat(100000.12);
+        }
+        
+        if (amry_div != null) {
+            var amry_price = parseFloat(amry_div.innerText);
+        } else {
+            var amry_price = parseFloat(100000.12);
+        }
+
+        if (armtek_div != null) {
+            var armtek_price = parseFloat(armtek_div.innerText);
+        } else {
+            var armtek_price = parseFloat(100000.12);
+        }
+        // *
+        
+
+        // Выбор минимальной цены
+        const min_price = Math.min.apply(null, [carreta_price, amry_price, armtek_price]) 
+
+        if (min_price === amry_price) {
+            amry_div.style.backgroundColor = "#5b752d";
+            carreta_div.style.backgroundColor = "#1f1f1f";
+            armtek_div.style.backgroundColor = "#1f1f1f";
+        } else if (min_price === carreta_price) {
+            amry_div.style.backgroundColor = "#1f1f1f";
+            carreta_div.style.backgroundColor = "#5b752d";
+            armtek_div.style.backgroundColor = "#1f1f1f";
+        } else if (min_price === armtek_price) {
+            amry_div.style.backgroundColor = "#1f1f1f";
+            carreta_div.style.backgroundColor = "#1f1f1f";
+            armtek_div.style.backgroundColor = "#5b752d";
+        } 
+        // *
+
+        // Расчет средней цены
+        var avg_price = ((carreta_price + amry_price + armtek_price) / 3).toFixed(2);
+        const avg_div = document.getElementById("avg_" +  message.articul);
+        avg_div.innerText = avg_price;
+        // *
+
+    };
+
+
+</script>
+
+
+</body>
+</html>
