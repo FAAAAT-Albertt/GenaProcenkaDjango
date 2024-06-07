@@ -63,14 +63,14 @@
                 <p class="nameText textWithFilter" id="carreta-id" style="display: block;">
                     Закуп<br>Carreta.ru
                 </p>
-                <div class="filterCheck inputWithFilter" style="display: none;">
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
                     <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
                     <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
                     <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
                 </div>
                 <div class="buttonFilter">
                     <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
-                </div>
+                </div> -->
             </div>
 
             {% for value in details %}
@@ -87,14 +87,14 @@
                 <p class="nameText textWithFilter" id="amry-id" style="display: block;">
                     Закуп<br>Amry.ru
                 </p>
-                <div class="filterCheck inputWithFilter" style="display: none;">
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
                     <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
                     <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
                     <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
                 </div>
                 <div class="buttonFilter">
                     <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
-                </div>
+                </div> -->
             </div>
 
             {% for value in details %}
@@ -111,14 +111,14 @@
                 <p class="nameText textWithFilter" id="armtek-id" style="display: block;">
                     Закуп<br>Armtek.ru
                 </p>
-                <div class="filterCheck inputWithFilter" style="display: none;">
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
                     <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
                     <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
                     <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
                 </div>
                 <div class="buttonFilter">
                     <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
-                </div>
+                </div> -->
             </div>
 
             {% for value in details %}
@@ -135,14 +135,14 @@
                 <p class="nameText textWithFilter" id="emex-id" style="display: block;">
                     Розница<br>Emex.ru
                 </p>
-                <div class="filterCheck inputWithFilter" style="display: none;">
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
                     <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
                     <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
                     <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
                 </div>
                 <div class="buttonFilter">
                     <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
-                </div>
+                </div> -->
             </div>
 
             {% for value in details %}
@@ -280,8 +280,9 @@
 
         // Расчет средней цены
         var avg_price = ((carreta_price + amry_price + armtek_price) / 3).toFixed(2);
+        var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price/10) + 5/10) * 10 : (Math.round(parseInt(avg_price/10) + round_avg/10)) * 10;
         const avg_div = document.getElementById("avg_" +  message.articul);
-        avg_div.innerText = avg_price;
+        avg_div.innerText = avg_price + " - " + round_avg;
         // *
 
     };
