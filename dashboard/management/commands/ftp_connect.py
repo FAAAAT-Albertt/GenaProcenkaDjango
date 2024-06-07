@@ -1,3 +1,4 @@
+import asyncio
 from ftplib import FTP
 import pandas as pd
 import numpy as np
@@ -10,22 +11,33 @@ class Command(BaseCommand):
     help = 'Just a command for launching Backend'
 
     def handle(self, *args, **kwargs):
+        # asyncio.run(self.database_work())
         self.database_work()
         
     def database_work(self):
-        for file in ['Amry2', 'Amry4', 'Amry6']:
+        # for file in ['Amry2', 'Amry4', 'Amry6']:
+        for file in ['Amry4', 'Amry6']:
             df = pd.read_csv(f'temp_files/{file}.csv',delimiter=';', encoding='cp1251')
             result = df.to_numpy()
-            for data_detail in np.array(result):
-                detail = DetailAmry.objects.create(
-                    detail=data_detail[2],
-                    article=data_detail[1],
-                    brand=data_detail[0],
-                    quantity=data_detail[3],
-                    price=float(data_detail[4].replace(",", ".")),
-                    part=data_detail[5],
-                )
-                detail.save()
+            DetailAmry.objects.bulk_create([DetailAmry(
+                detail=data_detail[2],
+                article=data_detail[1],
+                brand=data_detail[0],
+                quantity=int(round(float(str(data_detail[3]).replace(',','.')))),
+                price=float(data_detail[4].replace(",", ".")),
+                part=data_detail[5],
+            ) for data_detail in np.array(result)])
+            # for data_detail in np.array(result):
+                # detail = await DetailAmry.objects.acreate(
+                #     detail=data_detail[2],
+                #     article=data_detail[1],
+                #     brand=data_detail[0],
+                #     quantity=data_detail[3],
+                #     price=float(data_detail[4].replace(",", ".")),
+                #     part=data_detail[5],
+                # )
+                # await detail.asave()
+
 
     def ftp_down(self):
         try:

@@ -11,5 +11,5 @@ class DetailAmry(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['article', 'quantity'], name='article_quantity_idx'),
+            models.Index(fields=['article'], name='article_idx'),
         ]
