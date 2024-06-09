@@ -2,6 +2,12 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
+import os
+from django.conf import settings
 
 import json
 import pandas as pd
@@ -41,3 +47,26 @@ class DashboardView(TemplateView):
             json_data = df.to_dict(orient="records")
         
             return render(request, self.template_name, context={"details" : json_data})
+        
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def upload_file(request):
+    if 'file' not in request.data:
+        return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    file_obj = request.data['file']
+    valid_mime_types = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+    
+    if file_obj.content_type not in valid_mime_types:
+        return Response({'error': 'Invalid file type. Please upload an Excel file.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    save_path = os.path.join(settings.MEDIA_ROOT, 'uploads', file_obj.name)
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    
+    with open(save_path, 'wb+') as destination:
+        for chunk in file_obj.chunks():
+            destination.write(chunk)
+    
+    return Response({'message': 'Файл успешно загружен!', 'file_path': save_path}, status=status.HTTP_201_CREATED)

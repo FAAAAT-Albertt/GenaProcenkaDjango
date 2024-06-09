@@ -9,7 +9,7 @@ class DetailAmry(models.Model):
     price = models.FloatField(blank=False)
     part = models.IntegerField(blank=False)
 
-    class Meta:
-        indexes = [
-            models.Index(fields=['article'], name='article_idx'),
-        ]
+class IsCompletedProducts(models.Model):
+    """Проценненые товары"""
+    detail = models.ForeignKey("DetailAmry", on_delete=models.CASCADE)
+    price = models.FloatField(blank=False)

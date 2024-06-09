@@ -102,12 +102,13 @@ img {
   padding-left: 17px;
 }
 
-.buttonFilter {
+.buttonFilter{
   height: inherit;
   padding-top: 5px;
   padding-right: 3px;
 }
-.filter {
+
+.filter{
   height: 1.2rem;
 }
 
@@ -122,6 +123,7 @@ img {
   background-color: #313946;
   padding: 10px 20px;
   border-radius: 5px;
+  width: 180px;
 }
 .changeButton {
   display: flex;
@@ -130,6 +132,7 @@ img {
 }
 .btn-primary {
   padding: 10px 60px;
+  width: auto;
 }
 .btnPrev,
 .btnNext {
@@ -158,4 +161,11 @@ input[type="number"] {
 /* Для IE и Edge */
 input[type="number"]::-ms-clear {
   display: none;
+}
+
+.procent{
+  padding-bottom: 5px;
+  padding-left: 2px;
+  font-size: 10px;
+  color: #3ca444;
 }

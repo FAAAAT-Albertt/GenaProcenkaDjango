@@ -18,10 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from dashboard.views import LoginView, DashboardView
+from dashboard.views import LoginView, DashboardView, upload_file
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LoginView.as_view(), name='login'),
     path('dashboard', DashboardView.as_view(), name='dashboard'),
+    path('upload/', upload_file, name='upload_file'),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

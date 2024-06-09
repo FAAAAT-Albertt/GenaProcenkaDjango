@@ -35,7 +35,7 @@
             
             {% for value in details %}
             <div class="item minName">
-                <p class="itemText">
+                <p class="itemText" name="article-data">
                     {{value.Article}}
                 </p>
             </div>
@@ -60,7 +60,7 @@
         </div>
         <div class="checkbox">
             <div class="name">
-                <p class="nameText textWithFilter" id="carreta-id" style="display: block;">
+                <p class="nameText" id="carreta-id" style="display: block;">
                     Закуп<br>Carreta.ru
                 </p>
                 <!-- <div class="filterCheck inputWithFilter" style="display: none;">
@@ -84,7 +84,7 @@
         </div>
         <div class="checkbox">
             <div class="name">
-                <p class="nameText textWithFilter" id="amry-id" style="display: block;">
+                <p class="nameText" id="amry-id" style="display: block;">
                     Закуп<br>Amry.ru
                 </p>
                 <!-- <div class="filterCheck inputWithFilter" style="display: none;">
@@ -108,7 +108,7 @@
         </div>
         <div class="checkbox">
             <div class="name">
-                <p class="nameText textWithFilter" id="armtek-id" style="display: block;">
+                <p class="nameText" id="armtek-id" style="display: block;">
                     Закуп<br>Armtek.ru
                 </p>
                 <!-- <div class="filterCheck inputWithFilter" style="display: none;">
@@ -132,7 +132,7 @@
         </div>
         <div class="checkbox">
             <div class="name">
-                <p class="nameText textWithFilter" id="emex-id" style="display: block;">
+                <p class="nameText" id="emex-id" style="display: block;">
                     Розница<br>Emex.ru
                 </p>
                 <!-- <div class="filterCheck inputWithFilter" style="display: none;">
@@ -170,10 +170,11 @@
             </div>
 
             {% for value in details %}
-            <div class="item">
-                <p class="itemText" id="avg_{{ value.Article }}">
+            <div class="item itemFlex">
+                <p class="itemText" name="maybe-price" id="avg_{{ value.Article }}">
                     -
                 </p>
+                <p class="procent" id="#">20%</p>
             </div>
             {% endfor %}
         </div>
@@ -186,7 +187,7 @@
             
             {% for value in details %}
             <div class="item minName">
-                <input class="itemText" type="text" placeholder="Введите сумму">
+                <input class="itemText" name="new-price" type="text" placeholder="Введите сумму">
             </div>
             {% endfor %}
 
@@ -196,6 +197,12 @@
     <button class="btn">
         Отменить фильтры
     </button>
+    <button  type="submit" class="btn" id="file-upload-button">
+        Добавить файл
+    </button>
+    <input type="file" name="down_file" id="file-input" style="display: none;">
+    <!-- <form action="" method="post" enctype="multipart/form-data"> -->
+    <!-- </form> -->
     <div class="changeButton">
         <button class="btnPrev">
             <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
@@ -207,6 +214,9 @@
             <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
         </button>
     </div>
+    <button class="btn" id="add-page-button">
+        Добавить страницу
+    </button>
     <button class="btn">
         Применить фильтры
     </button>
@@ -286,8 +296,73 @@
         // *
 
     };
+</script>
+<script>
+    const fileInput = document.getElementById('file-input');
+    const fileUploadButton = document.getElementById('file-upload-button');
 
+    fileUploadButton.addEventListener('click', function() {
+        fileInput.click(); // При клике на кнопку вызываем клик на скрытом input
+    });
 
+    fileInput.addEventListener('change', function() {
+        const file = fileInput.files[0];
+        if (file) {
+            const validMimeTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+            
+            if (!validMimeTypes.includes(file.type)) {
+                alert('Пожалуйста, загрузите файл формата Excel.');
+                fileUploadButton.textContent = 'Добавить файл';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Отправляем файл на сервер
+            fetch('/upload/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Успех:', data);
+                fileUploadButton.textContent = 'Файл загружен';
+            })
+            .catch((error) => {
+                console.error('Ошибка:', error);
+                fileUploadButton.textContent = 'Ошибка загрузки';
+            });
+        } else {
+            fileUploadButton.textContent = 'Добавить файл';
+        }
+    });
+</script>
+<script>
+    document.getElementById('add-page-button').addEventListener('click', function() {
+        if (confirm('Подтвердите действие')) {
+            
+            const articles = document.querySelectorAll('.itemText[name="article-data"]');
+            const maybePrice = document.querySelectorAll('.itemText[name="maybe-price"]');
+            const newPrice = document.querySelectorAll('.itemText[name="new-price"]');
+            
+            const data = [];
+
+            if (articles.length === maybePrice.length && articles.length === newPrice.length) {
+                for (let i = 0; i < articles.length; i++) {
+                    const articleText = articles[i].textContent.trim();
+                    const maybePriceText = maybePrice[i].textContent.trim();
+                    const newPriceText = newPrice[i].textContent.trim();
+                    
+                    data.push([articleText, maybePriceText, newPriceText]);
+                }
+
+                console.log(data);
+            } else {
+                console.error('Длины массивов не совпадают');
+            }
+        }
+    });
 </script>
 </body>
 </html>

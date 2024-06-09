@@ -129,3 +129,6 @@ var applyButton = document.querySelector('.buttons .btn:nth-child(3)'); // пр�
 if (applyButton) {
     applyButton.addEventListener('click', applyFilters);
 }
+
+
+
