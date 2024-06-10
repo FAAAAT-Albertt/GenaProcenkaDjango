@@ -340,29 +340,69 @@
 </script>
 <script>
     document.getElementById('add-page-button').addEventListener('click', function() {
-        if (confirm('Подтвердите действие')) {
-            
+        if (confirm('Подтвердить действие')) {
             const articles = document.querySelectorAll('.itemText[name="article-data"]');
             const maybePrice = document.querySelectorAll('.itemText[name="maybe-price"]');
             const newPrice = document.querySelectorAll('.itemText[name="new-price"]');
             
+            let addData = {};
             const data = [];
 
             if (articles.length === maybePrice.length && articles.length === newPrice.length) {
                 for (let i = 0; i < articles.length; i++) {
                     const articleText = articles[i].textContent.trim();
                     const maybePriceText = maybePrice[i].textContent.trim();
-                    const newPriceText = newPrice[i].textContent.trim();
-                    
-                    data.push([articleText, maybePriceText, newPriceText]);
+                    const newPriceText = newPrice[i].value.trim();
+                    if (newPriceText == "") {
+                        addData = {articleText: maybePriceText};
+                    } else {
+                        addData = {articleText: newPriceText};
+                    }
+                    data.push(addData);
                 }
+
+                // Преобразование данных в JSON строку
+                const jsonData = JSON.stringify(data);
+
+                // Создание Blob объекта из JSON строки
+                const blob = new Blob([jsonData], { type: 'application/json' });
+
+                // Создание временного URL для Blob
+                const url = URL.createObjectURL(blob);
+
+                // Создание ссылки для скачивания файла
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Отправка JSON файла на сервер
+                const formData = new FormData();
+                formData.append('file', blob, 'data.json');
+
+                fetch('/upload_completed_products/', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(responseData => {
+                    console.log(responseData);
+                    alert(responseData.message || responseData.error);
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Error uploading file');
+                });
 
                 console.log(data);
             } else {
                 console.error('Длины массивов не совпадают');
             }
         }
-    });
+    });  
 </script>
 </body>
 </html>

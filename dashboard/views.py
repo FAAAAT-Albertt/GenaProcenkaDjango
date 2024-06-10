@@ -6,10 +6,15 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-import os
 from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
+from .models import DetailAmry, IsCompletedProducts
+
 
 import json
+import os
 import pandas as pd
 
 # Create your views here.
@@ -70,3 +75,24 @@ def upload_file(request):
             destination.write(chunk)
     
     return Response({'message': 'Файл успешно загружен!', 'file_path': save_path}, status=status.HTTP_201_CREATED)
+
+@csrf_exempt
+def upload_completed_products(request):
+    if request.method == 'POST':
+        try:
+            file = request.FILES['file']
+            file_content = file.read().decode('utf-8')
+            data = json.loads(file_content)
+            print(data)
+            save_completed_products(data)
+            return JsonResponse({'message': 'Данные успешно сохранены!'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+async def save_completed_products(data):
+    pass
+    column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
+    df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
+    json_data = df.to_dict(orient="records")
