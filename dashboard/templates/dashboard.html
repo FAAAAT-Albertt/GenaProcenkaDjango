@@ -207,7 +207,7 @@
         <button class="btnPrev">
             <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
         </button>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" id="export-button">
             Отправить выгрузку
         </button>
         <button class="btnNext">
@@ -345,7 +345,7 @@
             const maybePrice = document.querySelectorAll('.itemText[name="maybe-price"]');
             const newPrice = document.querySelectorAll('.itemText[name="new-price"]');
             
-            let addData = {};
+            let addData = [];
             const data = [];
 
             if (articles.length === maybePrice.length && articles.length === newPrice.length) {
@@ -354,9 +354,9 @@
                     const maybePriceText = maybePrice[i].textContent.trim();
                     const newPriceText = newPrice[i].value.trim();
                     if (newPriceText == "") {
-                        addData = {articleText: maybePriceText};
+                        addData = [articleText, maybePriceText];
                     } else {
-                        addData = {articleText: newPriceText};
+                        addData = [articleText, newPriceText];
                     }
                     data.push(addData);
                 }
@@ -403,6 +403,39 @@
             }
         }
     });  
+</script>
+<script>
+    document.getElementById('export-button').addEventListener('click', function() {
+        if (confirm('Подтвердить действие')) {
+            fetch('/export_to_excel/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'details.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+        });
 </script>
 </body>
 </html>

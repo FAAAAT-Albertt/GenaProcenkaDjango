@@ -7,11 +7,10 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
-from .models import DetailAmry, IsCompletedProducts
-
+from .models import IsCompletedProducts, MyPrice
 
 import json
 import os
@@ -73,8 +72,25 @@ def upload_file(request):
     with open(save_path, 'wb+') as destination:
         for chunk in file_obj.chunks():
             destination.write(chunk)
-    
+
+    update_base_my_price()
+
     return Response({'message': 'Файл успешно загружен!', 'file_path': save_path}, status=status.HTTP_201_CREATED)
+
+def update_base_my_price():
+    column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
+    df = pd.read_excel("media/uploads/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
+    json_data = df.to_dict(orient="records")
+
+    MyPrice.objects.all().delete()
+
+    MyPrice.objects.bulk_create([MyPrice(
+            detail = data['Detail'],
+            brand = data['Brand'],
+            article = data['Article'],
+            buyPrice = float(data['BuyPrice']),
+            salePrice = float(data['SalePrice'])
+            ) for data in json_data])
 
 @csrf_exempt
 def upload_completed_products(request):
@@ -90,9 +106,53 @@ def upload_completed_products(request):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+def save_completed_products(data):
+    for detail in data:
+        try:
+            products = MyPrice.objects.get(article=detail[0])
+        except MyPrice.DoesNotExist:
+            continue
 
-async def save_completed_products(data):
-    pass
-    column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
-    df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
-    json_data = df.to_dict(orient="records")
+        IsCompletedProducts.objects.create(
+            detail_data=products,
+            # price=detail[1]
+            price=4444.44
+        ).save()
+
+def export_to_excel(request):
+    # Извлечение данных из модели
+    result = []
+    details_price = IsCompletedProducts.objects.all().values()
+    
+    for detail_price in details_price:
+        try:
+            detail_enother = MyPrice.objects.get(article=detail_price['detail_data_id'])
+            result.append({
+                "detail": detail_enother.detail,
+                "article": detail_enother.article,
+                "brand": detail_enother.brand,
+                "price": detail_price['price']
+            })
+        except MyPrice.DoesNotExist:
+            continue
+
+    # Создание DataFrame
+    df = pd.DataFrame(result)
+    
+    # Указание директории для сохранения файла
+    directory = 'exported_files'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    
+    file_path = os.path.join(directory, 'details.xlsx')
+    
+    # Сохранение DataFrame в Excel файл
+    df.to_excel(file_path, index=False)
+    
+    # Создание HTTP ответа с Excel файлом
+    with open(file_path, 'rb') as excel:
+        response = HttpResponse(excel.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
+        return response
+
+    # IsCompletedProducts.objects.all().delete()

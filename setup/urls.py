@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from dashboard.views import LoginView, DashboardView, upload_file, upload_completed_products
+from dashboard.views import LoginView, DashboardView, upload_file, upload_completed_products, \
+export_to_excel
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +27,7 @@ urlpatterns = [
     path('dashboard', DashboardView.as_view(), name='dashboard'),
     path('upload/', upload_file, name='upload_file'),
     path('upload_completed_products/', upload_completed_products, name='upload_completed_products'),
-
+    path('export_to_excel/', export_to_excel, name='export_to_excel')
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

@@ -11,8 +11,13 @@ class DetailAmry(models.Model):
 
 class IsCompletedProducts(models.Model):
     """Проценненые товары"""
-    # detail = models.ForeignKey("DetailAmry", on_delete=models.CASCADE)
+    detail_data = models.ForeignKey("MyPrice", on_delete=models.CASCADE)
+    price = models.FloatField(blank=False)
+
+class MyPrice(models.Model):
+    """таблиц своих товаров для проценки"""
     detail = models.CharField(blank=False)
     brand = models.CharField(blank=False)
-    article = models.CharField(blank=False)
-    price = models.FloatField(blank=False)
+    article = models.CharField(blank=False, primary_key=True)
+    buyPrice = models.FloatField(blank=False)
+    salePrice = models.FloatField(blank=False)
