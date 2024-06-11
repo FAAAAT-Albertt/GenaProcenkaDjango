@@ -59,16 +59,16 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         # carreta_thread.start()
         # emex_thread = Thread(target=self.start_amry, args=('emex',))
         # emex_thread.start()
-        # percent = 0.5
-        # while True:
-        #     prices = MyPrice.objects.filter(send=False)
-        #     for price in prices:
-        #         price.amry = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-        #         price.armtek = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-        #         price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-        #         price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-        #         price.save()
-        #         time.sleep(0.4)
+        percent = 0.5
+        while True:
+            prices = MyPrice.objects.filter(send=False)
+            for price in prices:
+                price.amry = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.armtek = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.save()
+                time.sleep(0.4)
 
             
     def start_amry(self, site):
