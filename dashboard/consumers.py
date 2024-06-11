@@ -59,16 +59,16 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         # carreta_thread.start()
         # emex_thread = Thread(target=self.start_amry, args=('emex',))
         # emex_thread.start()
-        percent = 0.5
-        while True:
-            prices = MyPrice.objects.filter(send=False)
-            for price in prices:
-                price.amry = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.armtek = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.save()
-                time.sleep(0.4)
+        # percent = 0.5
+        # while True:
+        #     prices = MyPrice.objects.filter(send=False)
+        #     for price in prices:
+        #         price.amry = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.armtek = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.save()
+        #         time.sleep(0.4)
 
             
     def start_amry(self, site):
@@ -82,18 +82,18 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
             asyncio.run(emex_api.main())
 
     def get_price_amry(self):
-        column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
-        df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
-        json_data = df.to_dict(orient="records")
-        for row in json_data:
-            detail = DetailAmry.objects.filter(article = str(row['Article'])).order_by('-price').first()
+        prices = MyPrice.objects.filter(send=False, amry=0)
+        for row in prices:
+            detail = DetailAmry.objects.filter(article = row.article).order_by('-price').first()
             if not detail is None:
-                result_my = {
-                    'column' : 'amry',
-                    'articul' : detail.article,
-                    'price' : detail.price,
-                }
-                asyncio.run(self.send(json.dumps(result_my)))
+                # result_my = {
+                #     'column' : 'amry',
+                #     'articul' : detail.article,
+                #     'price' : detail.price,
+                # }
+                # asyncio.run(self.send(json.dumps(result_my)))
+                row.amry = detail.price
+                row.save()
 
     def database_prices(self):
         while True:

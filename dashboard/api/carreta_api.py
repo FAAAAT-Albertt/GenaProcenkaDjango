@@ -7,8 +7,9 @@ import requests
 import time
 import websocket
 
-
 import pandas as pd
+
+from ..models import MyPrice
 
 async def parce_carreta(url, params, json_data):
     max_concurrent_requests = 1
@@ -72,8 +73,12 @@ async def main() -> None:
     "api_key": "d53b0932-3239-4ed9-9023-a3c49e6ca2cc",
     "q": ""
     }
-    column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
-    df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
+    # column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
+    # df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
+
+    prices = MyPrice.objects.filter(send=False, carreta=0)
+    # prices to json
+
     json_data = df.to_dict(orient="records")
     await parce_carreta(url, params, json_data)
     return time.monotonic() - start

@@ -8,6 +8,8 @@ import websocket
 
 import pandas as pd
 
+from ..models import MyPrice
+
 
 async def armtek_parce(url, user_login, user_password, data, json_data) -> None:
     tasks = []

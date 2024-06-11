@@ -9,6 +9,8 @@ import websocket
 
 import pandas as pd
 
+from ..models import MyPrice
+
 async def emex_parce(article) -> None:
     login = "2742407"
     password = "8f228f39"
