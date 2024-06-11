@@ -1,3 +1,5 @@
+window.price_avg = {};
+
 function changeSVG(event) {
     var btn = event.currentTarget; // Получаем текущую кнопку
     var parentDiv = btn.closest('.checkbox'); // Получаем родительский div с классом 'checkbox'
@@ -78,6 +80,16 @@ function resetFilters() {
     filterButtons.forEach(function (img) {
         img.src = 'static/img/gala--settings.svg';
     });
+
+    Object.entries(window.price_avg).forEach(([key, value]) => {
+        var div = document.getElementById("avg_" + key);
+        div.textContent = value;
+        var parrent = div.parentElement;
+        var perc = parrent.querySelector(".procent");
+        perc.textContent = "0%";
+
+
+    });
 }
 
 // Назначаем обработчик события для кнопки "Отменить фильтры"
@@ -95,22 +107,28 @@ function applyFilters() {
         var nameText = checkbox.querySelector('.nameText');
         var filterNumber = checkbox.querySelector('.filterNumber');
         var itemTextes = checkbox.querySelectorAll('.itemText');
+        var percentages = checkbox.querySelectorAll('.procent');
 
         if (filterCheck && filterCheck.style.display === 'flex' && filterNumber) {
             // Получаем процент из фильтра
             var percentage = parseFloat(filterNumber.value);
 
             // Преобразуем значение в ячейке itemText в число и умножаем на (1 + процент/100)
+            let i = 0;
             itemTextes.forEach(function (itemText) {
-                var currentPrice = parseFloat(itemText.textContent);
+                var currentPrice = parseFloat(itemText.innerText);
                 var newPrice = currentPrice * (1 + percentage / 100);
-
+                
                 // Обновляем значение в ячейке itemText
-                itemText.textContent = newPrice.toFixed(2); // округляем до двух знаков после запятой
+                var newPriceString = price[1] + " - " + newPrice.toFixed(2);
+                itemText.textContent = newPrice.toFixed(2);; // округляем до двух знаков после запятой
+                percentages[i].textContent = percentage + "%";
+                i = i + 1;
+                
             });
             // Сбрасываем значение фильтра
             filterNumber.value = 0;
-
+            console.log(window.price_avg);
             // Сворачиваем фильтр и отображаем название колонки
             filterCheck.style.display = 'none';
             nameText.style.display = 'block';
@@ -125,7 +143,7 @@ function applyFilters() {
 }
 
 // Назначаем обработчик события для кнопки "Применить фильтры"
-var applyButton = document.querySelector('.buttons .btn:nth-child(3)'); // предположительно, это третья кнопка в .buttons
+var applyButton = document.querySelector('#apply_filter'); // предположительно, это третья кнопка в .buttons
 if (applyButton) {
     applyButton.addEventListener('click', applyFilters);
 }

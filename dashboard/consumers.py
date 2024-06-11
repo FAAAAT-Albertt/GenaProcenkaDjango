@@ -68,7 +68,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                 price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
                 price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
                 price.save()
-                time.sleep(0.1)
+                time.sleep(0.4)
 
             
     def start_amry(self, site):
