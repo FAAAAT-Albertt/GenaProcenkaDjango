@@ -21,3 +21,8 @@ class MyPrice(models.Model):
     article = models.CharField(blank=False, primary_key=True)
     buyPrice = models.FloatField(blank=False)
     salePrice = models.FloatField(blank=False)
+    carreta = models.FloatField(blank=False, default=0)
+    amry = models.FloatField(blank=False, default=0)
+    armtek = models.FloatField(blank=False, default=0)
+    emex = models.FloatField(blank=False, default=0)
+    send = models.BooleanField(default=False)

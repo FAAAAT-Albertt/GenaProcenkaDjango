@@ -7,7 +7,7 @@ import pandas as pd
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.exceptions import DenyConnection
-from .models import DetailAmry
+from .models import DetailAmry, MyPrice
 
 from .api import amry_api
 from .api import armtek_api
@@ -29,6 +29,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
             self.parse = True
             _thread = Thread(target=self.simulate)
             _thread.start()
+            details = DetailAmry.objects.all()
 
     async def send_message(self, event):
         """Функция отправки сообщения на клиент"""
@@ -48,16 +49,28 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         )
 
     def simulate(self):
-        amry_thread = Thread(target=self.start_amry, args=('amry',))
-        amry_thread.start()
+        base_thread = Thread(target=self.database_prices)
+        base_thread.start()
+        # amry_thread = Thread(target=self.start_amry, args=('amry',))
+        # amry_thread.start()
         # armtek_thread = Thread(target=self.start_amry, args=('armtek',))
         # armtek_thread.start()
         # carreta_thread = Thread(target=self.start_amry, args=('carreta',))
         # carreta_thread.start()
         # emex_thread = Thread(target=self.start_amry, args=('emex',))
         # emex_thread.start()
-            
+        percent = 0.5
+        while True:
+            prices = MyPrice.objects.filter(send=False)
+            for price in prices:
+                price.amry = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.armtek = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+                price.save()
+                time.sleep(0.1)
 
+            
     def start_amry(self, site):
         if site == "amry":
             self.get_price_amry()
@@ -81,3 +94,20 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                     'price' : detail.price,
                 }
                 asyncio.run(self.send(json.dumps(result_my)))
+
+    def database_prices(self):
+        while True:
+            prices = MyPrice.objects.filter(send=False).exclude(amry=0, armtek=0, carreta=0, emex=0)
+            for price in prices:
+                row = {
+                    'detail' : price.detail,
+                    'article' : price.article,
+                    'price' : price.buyPrice,
+                    'carreta' : price.carreta,
+                    'amry' : price.amry,
+                    'armtek' : price.armtek,
+                    'emex' : price.emex
+                }
+                asyncio.run(self.send(json.dumps(row)))
+                price.send = True
+                price.save()

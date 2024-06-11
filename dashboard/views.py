@@ -47,13 +47,13 @@ class DashboardView(TemplateView):
             return redirect("/")
         if request.method == 'GET':
             column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
-            df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
-            json_data = df.to_dict(orient="records")
+            # df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
+            # json_data = df.to_dict(orient="records")
+            json_data = []
         
             return render(request, self.template_name, context={"details" : json_data})
         
 @api_view(['POST'])
-@parser_classes([MultiPartParser, FormParser])
 def upload_file(request):
     if 'file' not in request.data:
         return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
@@ -92,19 +92,15 @@ def update_base_my_price():
             salePrice = float(data['SalePrice'])
             ) for data in json_data])
 
-@csrf_exempt
-def upload_completed_products(request):
-    if request.method == 'POST':
-        try:
-            file = request.FILES['file']
-            file_content = file.read().decode('utf-8')
-            data = json.loads(file_content)
-            print(data)
-            save_completed_products(data)
-            return JsonResponse({'message': 'Данные успешно сохранены!'}, status=201)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+@api_view(['POST'])
+def upload_completed_products(request, format=None):
+    try:
+        data = request.data
+        print(data)
+        save_completed_products(data)
+        return JsonResponse({'message': 'Данные успешно сохранены!'}, status=201)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def save_completed_products(data):
     for detail in data:

@@ -2,21 +2,23 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static '/css/dashboard.css' %}" rel="stylesheet" />
     <title>Проценка</title>
 </head>
+
 <body>
-   <div class="dashboard">
-        <div class="checkbox">
+    <div class="dashboard">
+        <div class="checkbox" id="detail">
             <div class="name minName">
                 <p class="nameText">
                     Деталь
                 </p>
             </div>
-            
+
             {% for value in details %}
             <div class="item minName">
                 <p class="itemText">
@@ -26,13 +28,13 @@
             {% endfor %}
 
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="article">
             <div class="name minName">
                 <p class="nameText">
                     Артикул
                 </p>
             </div>
-            
+
             {% for value in details %}
             <div class="item minName">
                 <p class="itemText" name="article-data">
@@ -42,13 +44,13 @@
             {% endfor %}
 
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="price">
             <div class="name minName">
                 <p class="nameText">
                     Цена
                 </p>
             </div>
-           
+
             {% for value in details %}
             <div class="item minName">
                 <p class="itemText">
@@ -58,7 +60,7 @@
             {% endfor %}
 
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="carreta">
             <div class="name">
                 <p class="nameText" id="carreta-id" style="display: block;">
                     Закуп<br>Carreta.ru
@@ -76,13 +78,13 @@
             {% for value in details %}
             <div class="item" id="carreta_{{ value.Article }}">
                 <p class="itemText">
-                   0.0
+                    0.0
                 </p>
             </div>
             {% endfor %}
 
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="amry">
             <div class="name">
                 <p class="nameText" id="amry-id" style="display: block;">
                     Закуп<br>Amry.ru
@@ -100,13 +102,13 @@
             {% for value in details %}
             <div class="item" id="amry_{{ value.Article }}">
                 <p class="itemText">
-                   0.0
+                    0.0
                 </p>
             </div>
             {% endfor %}
 
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="armtek">
             <div class="name">
                 <p class="nameText" id="armtek-id" style="display: block;">
                     Закуп<br>Armtek.ru
@@ -124,13 +126,13 @@
             {% for value in details %}
             <div class="item" id="armtek_{{ value.Article }}">
                 <p class="itemText">
-                   0.0
+                    0.0
                 </p>
             </div>
             {% endfor %}
 
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="emex">
             <div class="name">
                 <p class="nameText" id="emex-id" style="display: block;">
                     Розница<br>Emex.ru
@@ -148,24 +150,26 @@
             {% for value in details %}
             <div class="item" id="emex_{{ value.Article }}">
                 <p class="itemText">
-                   0.0
+                    0.0
                 </p>
             </div>
             {% endfor %}
 
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="avg_price">
             <div class="name">
                 <p class="nameText textWithFilter" id="avgPrice-id" style="display: block;">
                     Предложенная цена
                 </p>
                 <div class="filterCheck inputWithFilter" style="display: none;">
                     <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
-                    <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
+                    <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1"
+                        id="filterNumber">
                     <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
                 </div>
                 <div class="buttonFilter">
-                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}"
+                            alt=""></button>
                 </div>
             </div>
 
@@ -178,13 +182,13 @@
             </div>
             {% endfor %}
         </div>
-        <div class="checkbox">
+        <div class="checkbox" id="change_price">
             <div class="name minName">
                 <p class="nameText">
                     Изменить цену
                 </p>
             </div>
-            
+
             {% for value in details %}
             <div class="item minName">
                 <input class="itemText" name="new-price" type="text" placeholder="Введите сумму">
@@ -192,250 +196,142 @@
             {% endfor %}
 
         </div>
-   </div>
-   <div class="buttons">
-    <button class="btn">
-        Отменить фильтры
-    </button>
-    <button  type="submit" class="btn" id="file-upload-button">
-        Добавить файл
-    </button>
-    <input type="file" name="down_file" id="file-input" style="display: none;">
-    <!-- <form action="" method="post" enctype="multipart/form-data"> -->
-    <!-- </form> -->
-    <div class="changeButton">
-        <button class="btnPrev">
-            <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+    </div>
+    <div class="buttons">
+        <button class="btn">
+            Отменить фильтры
         </button>
-        <button class="btn btn-primary" id="export-button">
-            Отправить выгрузку
+        <button type="submit" class="btn" id="file-upload-button">
+            Добавить файл
         </button>
-        <button class="btnNext">
-            <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+        <input type="file" name="down_file" id="file-input" style="display: none;">
+        <!-- <form action="" method="post" enctype="multipart/form-data"> -->
+        <!-- </form> -->
+        <div class="changeButton">
+            <button class="btnPrev">
+                <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+            </button>
+            <button class="btn btn-primary" id="export-button">
+                Отправить выгрузку
+            </button>
+            <button class="btnNext">
+                <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+            </button>
+        </div>
+        <button class="btn" id="add-page-button">
+            Добавить страницу
+        </button>
+        <button class="btn">
+            Применить фильтры
         </button>
     </div>
-    <button class="btn" id="add-page-button">
-        Добавить страницу
-    </button>
-    <button class="btn">
-        Применить фильтры
-    </button>
-   </div>
 
-<script src="{% static '/js/scripts.js' %}"></script>
-<script>
-    let socket = new WebSocket("ws://127.0.0.1:8000/ws_detail?from=site");
+    <script src="{% static '/js/scripts.js' %}"></script>
+    <script>
+        const div_detail = document.getElementById('detail')
+        const div_article = document.getElementById('article')
+        const div_price = document.getElementById('price')
+        const div_carreta = document.getElementById('carreta')
+        const div_amry = document.getElementById('amry')
+        const div_armtek = document.getElementById('armtek')
+        const div_emex = document.getElementById('emex')
+        const div_avg_price = document.getElementById('avg_price')
+        const div_change_price = document.getElementById('change_price')
 
-    socket.onopen = function(e) {
-        console.log("[open] Соединение установлено");
-    };
+        let socket = new WebSocket("ws://127.0.0.1:8000/ws_detail?from=site");
 
-    socket.onmessage = function(event) {
-        var message = JSON.parse(event.data);
-        // Обновление цены колонки
-        var div_id = message.column + "_" + message.articul;
-        const elem = document.getElementById(div_id);
-        // var p_elem = elem.getElementsByClassName('itemText');
-        // p_elem.innerText = message.price;
-        elem.innerHTML = '<p class="itemText">' + message.price + '</p>';
-        // *
+        socket.onopen = function (e) {
+            console.log("[open] Соединение установлено");
+        };
 
-        console.log(`[message] Данные получены с сервера: ${event.data}`);
-        
-        // Получение всех цен из строки
-        var carreta = "carreta_" + message.articul;
-        var amry = "amry_" + message.articul;
-        var armtek = "armtek_" + message.articul;
-        const carreta_div =  document.getElementById(carreta);
-        const amry_div =  document.getElementById(amry);
-        const armtek_div =  document.getElementById(armtek);
-        
-        if (carreta_div != null) {
-            var carreta_price = parseFloat(carreta_div.innerText);
-        } else {
-            var carreta_price = parseFloat(100000.12);
-        }
-        
-        if (amry_div != null) {
-            var amry_price = parseFloat(amry_div.innerText);
-        } else {
-            var amry_price = parseFloat(100000.12);
-        }
+        socket.onmessage = function (event) {
+            var message = JSON.parse(event.data);
 
-        if (armtek_div != null) {
-            var armtek_price = parseFloat(armtek_div.innerText);
-        } else {
-            var armtek_price = parseFloat(100000.12);
-        }
-        // *
-        
+            var detail_div_new = `<div class="item minName"><p class="itemText">${message.detail}</p></div>`
+            var article_div_new = `<div class="item minName"><p class="itemText" name="article-data">${message.article}</p></div>`
+            var price_div_new = `<div class="item minName"><p class="itemText">${message.price}</p></div>`
+            var carreta_div_new = `<div class="item" id="carreta_${message.article}"><p class="itemText">${message.carreta}</p></div>`
+            var amry_div_new = `<div class="item" id="amry_${message.article}"><p class="itemText">${message.amry}</p></div>`
+            var armtek_div_new = `<div class="item" id="armtek_${message.article}"><p class="itemText">${message.armtek}</p></div>`
+            var emex_div_new = `<div class="item" id="emex_${message.article}"><p class="itemText">${message.emex}</p></div>`
+            var avg_div_new = `<div class="item itemFlex"><p class="itemText" name="maybe-price" id="avg_${message.article}">-</p><p class="procent" id="#">20%</p></div>`
+            var change_div_new = `<div class="item minName"><input class="itemText" name="new-price" type="text" placeholder="Введите сумму"></div>`
+            div_detail.insertAdjacentHTML('beforeend', detail_div_new);
+            div_article.insertAdjacentHTML('beforeend', article_div_new);
+            div_price.insertAdjacentHTML('beforeend', price_div_new);
+            div_carreta.insertAdjacentHTML('beforeend', carreta_div_new);
+            div_amry.insertAdjacentHTML('beforeend', amry_div_new);
+            div_armtek.insertAdjacentHTML('beforeend', armtek_div_new);
+            div_emex.insertAdjacentHTML('beforeend', emex_div_new);
+            div_avg_price.insertAdjacentHTML('beforeend', avg_div_new);
+            div_change_price.insertAdjacentHTML('beforeend', change_div_new);
+            // Обновление цены колонки
+            // var div_id = message.column + "_" + message.articul;
+            // const elem = document.getElementById(div_id);
+            // // var p_elem = elem.getElementsByClassName('itemText');
+            // // p_elem.innerText = message.price;
+            // elem.innerHTML = '<p class="itemText">' + message.price + '</p>';
+            // *
 
-        // Выбор минимальной цены
-        const min_price = Math.min.apply(null, [carreta_price, amry_price, armtek_price]) 
+            console.log(`[message] Данные получены с сервера: ${event.data}`);
+            setTimeout(() => {
+                console.log("Delayed for 1 second.");
+            }, "1000");
+            // Получение всех цен из строки
+            var carreta = "carreta_" + message.article;
+            var amry = "amry_" + message.article;
+            var armtek = "armtek_" + message.article;
+            const carreta_div = document.getElementById(carreta);
+            const amry_div = document.getElementById(amry);
+            const armtek_div = document.getElementById(armtek);
 
-        if (min_price === amry_price) {
-            amry_div.style.backgroundColor = "#5b752d";
-            carreta_div.style.backgroundColor = "#313946";
-            armtek_div.style.backgroundColor = "#313946";
-        } else if (min_price === carreta_price) {
-            amry_div.style.backgroundColor = "#313946";
-            carreta_div.style.backgroundColor = "#5b752d";
-            armtek_div.style.backgroundColor = "#313946";
-        } else if (min_price === armtek_price) {
-            amry_div.style.backgroundColor = "#313946";
-            carreta_div.style.backgroundColor = "#313946";
-            armtek_div.style.backgroundColor = "#5b752d";
-        } 
-        // *
-
-        // Расчет средней цены
-        var avg_price = ((carreta_price + amry_price + armtek_price) / 3).toFixed(2);
-        var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price/10) + 5/10) * 10 : (Math.round(parseInt(avg_price/10) + round_avg/10)) * 10;
-        const avg_div = document.getElementById("avg_" +  message.articul);
-        avg_div.innerText = avg_price + " - " + round_avg;
-        // *
-
-    };
-</script>
-<script>
-    const fileInput = document.getElementById('file-input');
-    const fileUploadButton = document.getElementById('file-upload-button');
-
-    fileUploadButton.addEventListener('click', function() {
-        fileInput.click(); // При клике на кнопку вызываем клик на скрытом input
-    });
-
-    fileInput.addEventListener('change', function() {
-        const file = fileInput.files[0];
-        if (file) {
-            const validMimeTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-            
-            if (!validMimeTypes.includes(file.type)) {
-                alert('Пожалуйста, загрузите файл формата Excel.');
-                fileUploadButton.textContent = 'Добавить файл';
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            // Отправляем файл на сервер
-            fetch('/upload/', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Успех:', data);
-                fileUploadButton.textContent = 'Файл загружен';
-            })
-            .catch((error) => {
-                console.error('Ошибка:', error);
-                fileUploadButton.textContent = 'Ошибка загрузки';
-            });
-        } else {
-            fileUploadButton.textContent = 'Добавить файл';
-        }
-    });
-</script>
-<script>
-    document.getElementById('add-page-button').addEventListener('click', function() {
-        if (confirm('Подтвердить действие')) {
-            const articles = document.querySelectorAll('.itemText[name="article-data"]');
-            const maybePrice = document.querySelectorAll('.itemText[name="maybe-price"]');
-            const newPrice = document.querySelectorAll('.itemText[name="new-price"]');
-            
-            let addData = [];
-            const data = [];
-
-            if (articles.length === maybePrice.length && articles.length === newPrice.length) {
-                for (let i = 0; i < articles.length; i++) {
-                    const articleText = articles[i].textContent.trim();
-                    const maybePriceText = maybePrice[i].textContent.trim();
-                    const newPriceText = newPrice[i].value.trim();
-                    if (newPriceText == "") {
-                        addData = [articleText, maybePriceText];
-                    } else {
-                        addData = [articleText, newPriceText];
-                    }
-                    data.push(addData);
-                }
-
-                // Преобразование данных в JSON строку
-                const jsonData = JSON.stringify(data);
-
-                // Создание Blob объекта из JSON строки
-                const blob = new Blob([jsonData], { type: 'application/json' });
-
-                // Создание временного URL для Blob
-                const url = URL.createObjectURL(blob);
-
-                // Создание ссылки для скачивания файла
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'data.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                // Отправка JSON файла на сервер
-                const formData = new FormData();
-                formData.append('file', blob, 'data.json');
-
-                fetch('/upload_completed_products/', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(responseData => {
-                    console.log(responseData);
-                    alert(responseData.message || responseData.error);
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('Error uploading file');
-                });
-
-                console.log(data);
+            if (carreta_div != null) {
+                var carreta_price = parseFloat(carreta_div.innerText);
             } else {
-                console.error('Длины массивов не совпадают');
+                var carreta_price = parseFloat(100000.12);
             }
-        }
-    });  
-</script>
-<script>
-    document.getElementById('export-button').addEventListener('click', function() {
-        if (confirm('Подтвердить действие')) {
-            fetch('/export_to_excel/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.blob();
-                } else {
-                    throw new Error('Network response was not ok.');
-                }
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = 'details.xlsx';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-            });
-        }
-        });
-</script>
+
+            if (amry_div != null) {
+                var amry_price = parseFloat(amry_div.innerText);
+            } else {
+                var amry_price = parseFloat(100000.12);
+            }
+
+            if (armtek_div != null) {
+                var armtek_price = parseFloat(armtek_div.innerText);
+            } else {
+                var armtek_price = parseFloat(100000.12);
+            }
+            // *
+
+
+            // Выбор минимальной цены
+            const min_price = Math.min.apply(null, [carreta_price, amry_price, armtek_price])
+
+            if (min_price === amry_price) {
+                amry_div.style.backgroundColor = "#5b752d";
+                carreta_div.style.backgroundColor = "#313946";
+                armtek_div.style.backgroundColor = "#313946";
+            } else if (min_price === carreta_price) {
+                amry_div.style.backgroundColor = "#313946";
+                carreta_div.style.backgroundColor = "#5b752d";
+                armtek_div.style.backgroundColor = "#313946";
+            } else if (min_price === armtek_price) {
+                amry_div.style.backgroundColor = "#313946";
+                carreta_div.style.backgroundColor = "#313946";
+                armtek_div.style.backgroundColor = "#5b752d";
+            }
+            // *
+
+            // Расчет средней цены
+            var avg_price = ((carreta_price + amry_price + armtek_price) / 3).toFixed(2);
+            var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price / 10) + 5 / 10) * 10 : (Math.round(parseInt(avg_price / 10) + round_avg / 10)) * 10;
+            const avg_div = document.getElementById("avg_" + message.article);
+            avg_div.innerText = avg_price + " - " + round_avg;
+            // *
+
+        };
+    </script>
 </body>
+
 </html>
