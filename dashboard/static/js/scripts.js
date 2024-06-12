@@ -270,3 +270,37 @@ fileInput.addEventListener('change', function () {
     }
 });
 
+
+var prevButton = document.querySelector('.btnPrev');
+if (prevButton) {
+    prevButton.addEventListener('click', prevPage);
+}
+
+var nextButton = document.querySelector('.btnNext');
+if (nextButton) {
+    nextButton.addEventListener('click', nextPage);
+}
+
+function prevPage() {
+    var checkboxes = document.querySelectorAll('.checkbox');
+    checkboxes.forEach(function (checkbox) {
+        var itemTextes = checkbox.querySelectorAll('.item');
+        itemTextes.forEach(function (item) {
+            checkbox.removeChild(item);
+        })
+    });
+
+    socket.send(JSON.stringify({'message': "prev_page"}));
+}
+
+function nextPage() {
+    var checkboxes = document.querySelectorAll('.checkbox');
+    checkboxes.forEach(function (checkbox) {
+        var itemTextes = checkbox.querySelectorAll('.item');
+        itemTextes.forEach(function (item) {
+            checkbox.removeChild(item);
+        })
+    });
+
+    socket.send(JSON.stringify({'message': "next_page"}));
+}

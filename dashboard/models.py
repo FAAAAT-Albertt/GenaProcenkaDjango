@@ -26,3 +26,4 @@ class MyPrice(models.Model):
     armtek = models.FloatField(blank=False, default=0)
     emex = models.FloatField(blank=False, default=0)
     send = models.BooleanField(default=False)
+    page = models.PositiveSmallIntegerField(default=0)
