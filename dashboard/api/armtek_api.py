@@ -32,7 +32,7 @@ async def armtek_parce(url, user_login, user_password, data, json_data) -> None:
         
 async def logics_operation(response, article):
     async def procces_product(product):
-        if product == 'ERROR': return {'coef': 0}
+        if product == 'ERROR' or product == 'MSG': return {'coef': 0}
         now_date = datetime.date.today()
         try:
             late_date = datetime.datetime.strptime(product['WRNTDT'], "%Y%m%d%H%M%S")
@@ -85,9 +85,13 @@ async def logics_operation(response, article):
     #     ws.close()
     # except:
     #     pass
+    try:
+        await MyPrice.objects.filter(article = article.pk).aupdate(armtek = float(sorted_dict[0]['price']))
+    except:
+        await MyPrice.objects.filter(article = article.pk).aupdate(armtek = 0)
 
-    article.armtek = float(sorted_dict[0]['price'])
-    await article.asave()
+    # article.armtek = float(sorted_dict[0]['price'])
+    # await article.asave()
 
     # async with aiofiles.open('json_parce/api_armtek.json', 'a+', encoding='utf-8') as file:
     #     await file.write(json.dumps(result, indent=4, ensure_ascii=False))

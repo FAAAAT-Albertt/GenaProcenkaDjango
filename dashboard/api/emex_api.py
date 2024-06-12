@@ -74,8 +74,9 @@ async def emex_parce(article) -> None:
         # except:
         #     pass
 
-        article.emex = float(sorted_dict[0]['price'])
-        await article.asave()
+        await MyPrice.objects.filter(article = article.pk).aupdate(emex = float(sorted_dict[0]['price']))
+        # article.emex = float(sorted_dict[0]['price'])
+        # await article.asave()
     pass
 
 async def main():

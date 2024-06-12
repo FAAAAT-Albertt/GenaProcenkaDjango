@@ -82,11 +82,15 @@ function resetFilters() {
     });
 
     Object.entries(window.price_avg).forEach(([key, value]) => {
-        var div = document.getElementById("avg_" + key);
-        div.textContent = value;
-        var parrent = div.parentElement;
-        var perc = parrent.querySelector(".procent");
-        perc.textContent = "0%";
+        try {
+            var div = document.getElementById("avg_" + key);
+            div.textContent = value;
+            var parrent = div.parentElement;
+            var perc = parrent.querySelector(".procent");
+            perc.textContent = "0%";
+        } catch(err) {
+            console.log("after");
+        }
 
 
     });
@@ -120,12 +124,12 @@ function applyFilters() {
                 var newPrice = currentPrice * (1 + percentage / 100);
                 var round_avg = (round_avg = newPrice % 10) <= 5 ? (parseInt(newPrice / 10) + 5 / 10) * 10 : (Math.round(parseInt(newPrice / 10) + round_avg / 10)) * 10;
 
-                
+
                 // Обновляем значение в ячейке itemText
                 itemText.textContent = round_avg.toFixed(2);; // округляем до двух знаков после запятой
                 percentages[i].textContent = percentage + "%";
                 i = i + 1;
-                
+
             });
             // Сбрасываем значение фильтра
             filterNumber.value = 0;
@@ -291,7 +295,7 @@ function prevPage() {
         })
     });
 
-    socket.send(JSON.stringify({'message': "prev_page"}));
+    socket.send(JSON.stringify({ 'message': "prev_page" }));
 }
 
 function nextPage() {
@@ -303,5 +307,5 @@ function nextPage() {
         })
     });
 
-    socket.send(JSON.stringify({'message': "next_page"}));
+    socket.send(JSON.stringify({ 'message': "next_page" }));
 }

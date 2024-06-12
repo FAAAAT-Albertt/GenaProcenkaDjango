@@ -67,9 +67,12 @@ async def logics_operation(response, article):
     #     ws.close()
     # except:
     #     pass
-
-    article.carreta = float(sorted_dict[0]['price'])
-    await article.asave()
+    try:
+        await MyPrice.objects.filter(article = article.pk).aupdate(carreta = float(sorted_dict[0]['price']))
+    except:
+        await MyPrice.objects.filter(article = article.pk).aupdate(carreta = 0)
+    # article.carreta = float(sorted_dict[0]['price'])
+    # await article.asave()
 
 async def main() -> None:
     start = time.monotonic()

@@ -76,8 +76,8 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
     def simulate(self):
         base_thread = Thread(target=self.database_prices)
         base_thread.start()
-        # amry_thread = Thread(target=self.start_amry, args=('amry',))
-        # amry_thread.start()
+        amry_thread = Thread(target=self.start_amry, args=('amry',))
+        amry_thread.start()
         armtek_thread = Thread(target=self.start_amry, args=('armtek',))
         armtek_thread.start()
         carreta_thread = Thread(target=self.start_amry, args=('carreta',))
@@ -107,18 +107,20 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
             asyncio.run(emex_api.main())
 
     def get_price_amry(self):
-        prices = MyPrice.objects.filter(send=False, amry=0)
-        for row in prices:
-            detail = DetailAmry.objects.filter(article = row.article).order_by('-price').first()
-            if not detail is None:
-                row.amry = detail.price
-                row.save()
+        while True:
+            prices = MyPrice.objects.filter(send=False, amry=0)
+            for row in prices:
+                detail = DetailAmry.objects.filter(article = row.article).order_by('-price').first()
+                if not detail is None:
+                    MyPrice.objects.filter(article = row.pk).update(amry = detail.price)
+                    # row.amry = detail.price
+                    # row.save()
 
     def database_prices(self):
-        while self.i < 5:
+        while self.i < 50:
             prices = MyPrice.objects.filter(send=False)
             for price in prices:
-                if self.i < 5 and price.amry != 0 and price.armtek != 0 and price.carreta != 0 and price.emex != 0:
+                if self.i < 50 and price.amry != 0 and price.armtek != 0 and price.carreta != 0 and price.emex != 0:
                     row = {
                         'detail' : price.detail,
                         'article' : price.article,
@@ -128,6 +130,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                         'armtek' : price.armtek,
                         'emex' : price.emex
                     }
+                    time.sleep(0.1)
                     asyncio.run(self.send(json.dumps(row)))
                     price.send = True
                     price.page = self.page

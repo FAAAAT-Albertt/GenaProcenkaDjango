@@ -78,8 +78,10 @@ def upload_file(request):
     return Response({'message': 'Файл успешно загружен!', 'file_path': save_path}, status=status.HTTP_201_CREATED)
 
 def update_base_my_price():
-    column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
-    df = pd.read_excel("media/uploads/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
+    # , usecols=lambda x: x not in 'Unnamed: 4' names=column_names
+    column_names = ["Detail", "Article", "Brand", "BuyPrice", "SalePrice"]
+    df = pd.read_excel("media/uploads/base_procenka.xlsx", names=column_names, skiprows=1)
+    filtered_df = df.loc[:, ~df.columns.str.startswith('Unnamed')]
     json_data = df.to_dict(orient="records")
 
     MyPrice.objects.all().delete()
