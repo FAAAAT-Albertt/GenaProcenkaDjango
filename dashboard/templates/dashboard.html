@@ -205,8 +205,6 @@
             Добавить файл
         </button>
         <input type="file" name="down_file" id="file-input" style="display: none;">
-        <!-- <form action="" method="post" enctype="multipart/form-data"> -->
-        <!-- </form> -->
         <div class="changeButton">
             <button class="btnPrev">
                 <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
@@ -265,13 +263,6 @@
             div_emex.insertAdjacentHTML('beforeend', emex_div_new);
             div_avg_price.insertAdjacentHTML('beforeend', avg_div_new);
             div_change_price.insertAdjacentHTML('beforeend', change_div_new);
-            // Обновление цены колонки
-            // var div_id = message.column + "_" + message.articul;
-            // const elem = document.getElementById(div_id);
-            // // var p_elem = elem.getElementsByClassName('itemText');
-            // // p_elem.innerText = message.price;
-            // elem.innerHTML = '<p class="itemText">' + message.price + '</p>';
-            // *
 
             console.log(`[message] Данные получены с сервера: ${event.data}`);
             // Получение всех цен из строки

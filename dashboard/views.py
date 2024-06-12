@@ -149,6 +149,7 @@ def export_to_excel(request):
     with open(file_path, 'rb') as excel:
         response = HttpResponse(excel.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
+        IsCompletedProducts.objects.all().delete()
         return response
 
-    # IsCompletedProducts.objects.all().delete()
+

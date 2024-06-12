@@ -42,6 +42,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         self.parse = False
+        MyPrice.objects.all().delete()
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -77,22 +78,22 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         base_thread.start()
         # amry_thread = Thread(target=self.start_amry, args=('amry',))
         # amry_thread.start()
-        # armtek_thread = Thread(target=self.start_amry, args=('armtek',))
-        # armtek_thread.start()
-        # carreta_thread = Thread(target=self.start_amry, args=('carreta',))
-        # carreta_thread.start()
-        # emex_thread = Thread(target=self.start_amry, args=('emex',))
-        # emex_thread.start()
-        percent = 0.5
-        while True:
-            prices = MyPrice.objects.filter(send=False)
-            for price in prices:
-                price.amry = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.armtek = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
-                price.save()
-                time.sleep(0.4)
+        armtek_thread = Thread(target=self.start_amry, args=('armtek',))
+        armtek_thread.start()
+        carreta_thread = Thread(target=self.start_amry, args=('carreta',))
+        carreta_thread.start()
+        emex_thread = Thread(target=self.start_amry, args=('emex',))
+        emex_thread.start()
+        # percent = 0.5
+        # while True:
+        #     prices = MyPrice.objects.filter(send=False)
+        #     for price in prices:
+        #         price.amry = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.armtek = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.carreta = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
+        #         price.save()
+        #         time.sleep(0.4)
 
             
     def start_amry(self, site):
@@ -115,9 +116,9 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
 
     def database_prices(self):
         while self.i < 5:
-            prices = MyPrice.objects.filter(send=False).exclude(amry=0, armtek=0, carreta=0, emex=0)
+            prices = MyPrice.objects.filter(send=False)
             for price in prices:
-                if self.i < 5:
+                if self.i < 5 and price.amry != 0 and price.armtek != 0 and price.carreta != 0 and price.emex != 0:
                     row = {
                         'detail' : price.detail,
                         'article' : price.article,

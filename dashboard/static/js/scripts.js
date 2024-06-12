@@ -118,10 +118,11 @@ function applyFilters() {
             itemTextes.forEach(function (itemText) {
                 var currentPrice = parseFloat(itemText.innerText);
                 var newPrice = currentPrice * (1 + percentage / 100);
+                var round_avg = (round_avg = newPrice % 10) <= 5 ? (parseInt(newPrice / 10) + 5 / 10) * 10 : (Math.round(parseInt(newPrice / 10) + round_avg / 10)) * 10;
+
                 
                 // Обновляем значение в ячейке itemText
-                var newPriceString = price[1] + " - " + newPrice.toFixed(2);
-                itemText.textContent = newPrice.toFixed(2);; // округляем до двух знаков после запятой
+                itemText.textContent = round_avg.toFixed(2);; // округляем до двух знаков после запятой
                 percentages[i].textContent = percentage + "%";
                 i = i + 1;
                 

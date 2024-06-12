@@ -9,6 +9,7 @@ import websocket
 import pandas as pd
 
 from ..models import MyPrice
+from asgiref.sync import sync_to_async
 
 
 async def armtek_parce(url, user_login, user_password, data, json_data) -> None:
@@ -17,13 +18,13 @@ async def armtek_parce(url, user_login, user_password, data, json_data) -> None:
 
     async with aiohttp.ClientSession() as session:
         sem = asyncio.Semaphore(max_concurrent_requests)
-        async def fetch_data(session, url, data, pin, brand):
+        async def fetch_data(session, url, data, obj):
             async with sem:
-                data['PIN'] = pin
-                data['BRAND'] = brand
+                data['PIN'] = obj.article
+                data['BRAND'] = obj.brand.strip()
                 async with session.post(url, data=data, auth=aiohttp.BasicAuth(user_login, user_password)) as response:
-                    return (await response.text(), pin)  
-        tasks = [fetch_data(session, url, data, json_data[i]['Article'], json_data[i]['Brand']) for i in range(len(json_data))]
+                    return (await response.text(), obj)  
+        tasks = [fetch_data(session, url, data, json_data[i]) for i in range(len(json_data))]
         responses = await asyncio.gather(*tasks)
         for content, article in responses:
             task = asyncio.create_task(logics_operation(content, article))
@@ -67,22 +68,26 @@ async def logics_operation(response, article):
         tasks.append(procces_product(product))
     processed_products = await asyncio.gather(*tasks)
     sorted_dict = sorted(processed_products, key=lambda item: (item['coef']==0, item['coef']))
-    result = {
-        str(article): sorted_dict[0]
-    }
-    try:
-        result_my = {
-            'column' : 'armtek',
-            'articul' : str(article),
-            'price' : float(result[article]['price']),
+    
+    # result = {
+    #     str(article): sorted_dict[0]
+    # }
+    # try:
+    #     result_my = {
+    #         'column' : 'armtek',
+    #         'articul' : str(article),
+    #         'price' : float(result[article]['price']),
 
-        }
-        ws = websocket.WebSocket()
-        ws.connect("ws://127.0.0.1:8000/ws_detail")
-        ws.send(json.dumps(result_my))
-        ws.close()
-    except:
-        pass
+    #     }
+    #     ws = websocket.WebSocket()
+    #     ws.connect("ws://127.0.0.1:8000/ws_detail")
+    #     ws.send(json.dumps(result_my))
+    #     ws.close()
+    # except:
+    #     pass
+
+    article.armtek = float(sorted_dict[0]['price'])
+    await article.asave()
 
     # async with aiofiles.open('json_parce/api_armtek.json', 'a+', encoding='utf-8') as file:
     #     await file.write(json.dumps(result, indent=4, ensure_ascii=False))
@@ -103,11 +108,24 @@ async def main() -> None:
         'KUNNR_ZA': '',
         'VBELN': ''
     }
-    column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
-    df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
-    json_data = df.to_dict(orient="records")
-    await armtek_parce(url, user_login, user_password, data, json_data)
-    return time.monotonic() - start
+    # column_names = ["Detail", "Article", "Brand", "BuyPrice", "Unnamed: 4", "SalePrice"]
+    # df = pd.read_excel("dashboard/base_procenka.xlsx", names=column_names, usecols=lambda x: x not in 'Unnamed: 4')
+    # json_data = df.to_dict(orient="records")
+    # await armtek_parce(url, user_login, user_password, data, json_data)
+    # return time.monotonic() - start
+
+    while True:
+        prices = await get_all_support()
+        if not prices:
+            continue
+        else:    
+            await armtek_parce(url, user_login, user_password, data, prices)
+            break
+            # return time.monotonic() - start
+
+@sync_to_async
+def get_all_support() -> list:
+    return list(MyPrice.objects.filter(send=False, armtek=0))
 
 if __name__ == '__main__':
     print(asyncio.run(main()))
