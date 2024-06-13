@@ -55,8 +55,9 @@ async def emex_parce(article) -> None:
                 'rating': float(product['DDPercent']),
                 'price': float(product['ResultPrice']),
                 # 'coef': round((float(product['DDPercent']) / 100) * float(product['ResultPrice']), 2)
-                } for product in content['Details']['SoapDetailItem']
+                } for product in content['Details']['SoapDetailItem'] if product['MakeName'].lower().strip() == article.brand.lower().strip()
             ]
+            
             sorted_dict = sorted(result, key=lambda item: item['price'])
             await MyPrice.objects.filter(article = article.pk).aupdate(emex = float(sorted_dict[0]['price']))
         except:
