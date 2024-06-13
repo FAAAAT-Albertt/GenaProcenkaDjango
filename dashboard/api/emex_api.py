@@ -20,7 +20,7 @@ async def emex_parce(article) -> None:
     subst_level = 'OriginalOnly'
     subst_filter = 'FilterOriginalAndAnalogs'
     delivery_region_type = 'PRI'
-    min_delivery_percent = '60.00'
+    min_delivery_percent = '75.00'
     max_ad_days = 15
     min_quantity = 2
     max_result_price = None
@@ -44,19 +44,23 @@ async def emex_parce(article) -> None:
             maxOneDetailOffersCount=max_one_detail_offers_count,
             detailNumsToLoad=detail_nums_to_load
         )
-        content = serialize_object(response) 
-        result = [
-            {
-            'brand': product['MakeName'],
-            'name': product['DetailNameRus'],
-            'quantity': product['Quantity'],
-            'delivery': product['ADDays'],
-            'rating': float(product['DDPercent']),
-            'price': float(product['ResultPrice']),
-            'coef': round((float(product['DDPercent']) / 100) * float(product['ResultPrice']), 2)
-            } for product in content['Details']['SoapDetailItem']
-        ]
-        sorted_dict = sorted(result, key=lambda item: item['coef'])
+        content = serialize_object(response)
+        try:
+            result = [
+                {
+                'brand': product['MakeName'],
+                'name': product['DetailNameRus'],
+                'quantity': product['Quantity'],
+                'delivery': product['ADDays'],
+                'rating': float(product['DDPercent']),
+                'price': float(product['ResultPrice']),
+                # 'coef': round((float(product['DDPercent']) / 100) * float(product['ResultPrice']), 2)
+                } for product in content['Details']['SoapDetailItem']
+            ]
+            sorted_dict = sorted(result, key=lambda item: item['price'])
+            await MyPrice.objects.filter(article = article.pk).aupdate(emex = float(sorted_dict[0]['price']))
+        except:
+            error = "No data detail"
         # result = {
         #     detail_num: sorted_dict[0]
         # }
@@ -74,7 +78,7 @@ async def emex_parce(article) -> None:
         # except:
         #     pass
 
-        await MyPrice.objects.filter(article = article.pk).aupdate(emex = float(sorted_dict[0]['price']))
+        
         # article.emex = float(sorted_dict[0]['price'])
         # await article.asave()
     pass

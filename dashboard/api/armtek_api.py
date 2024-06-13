@@ -32,24 +32,24 @@ async def armtek_parce(url, user_login, user_password, data, json_data) -> None:
         
 async def logics_operation(response, article):
     async def procces_product(product):
-        if product == 'ERROR' or product == 'MSG': return {'coef': 0}
+        if product == 'ERROR' or product == 'MSG': return {'price': 0}
         now_date = datetime.date.today()
         try:
             late_date = datetime.datetime.strptime(product['WRNTDT'], "%Y%m%d%H%M%S")
             fast_date = datetime.datetime.strptime(product['DLVDT'], "%Y%m%d%H%M%S")
             delivery_max = ((late_date.year - now_date.year) * 365) + ((late_date.month - now_date.month) * 30) + (late_date.day - now_date.day)
             delivery_min = ((fast_date.year - now_date.year) * 365) + ((fast_date.month - now_date.month) * 30) + (fast_date.day - now_date.day)
-            if delivery_max > 15 and delivery_min > 15: return {'coef': 0}
+            if delivery_max > 15 and delivery_min > 15: return {'price': 0}
             elif delivery_max <= 15 and delivery_min < 15: delivery = delivery_max
             elif delivery_max > 15 and delivery_min <= 15: delivery = delivery_min
         except:
             late_date = datetime.datetime.strptime(product['DLVDT'], "%Y%m%d%H%M%S")
             delivery_min = ((late_date.year - now_date.year) * 365) + ((late_date.month - now_date.month) * 30) + (late_date.day - now_date.day)
-            if delivery_min > 15: return {'coef': 0}
+            if delivery_min > 15: return {'price': 0}
             else: delivery = delivery_min
-        if int(product['RVALUE'].replace('>', '').replace('<', '').strip()) < 2 or int(float(product['VENSL'])) < 60:
+        if int(product['RVALUE'].replace('>', '').replace('<', '').strip()) < 2 or int(float(product['VENSL'])) < 85:
             return {
-                'coef': 0
+                'price': 0
             }
         else:
             return {
@@ -59,7 +59,7 @@ async def logics_operation(response, article):
                 'delivery': str(delivery),
                 'rating': product['VENSL'],
                 'price': product['PRICE'],
-                'coef': round((int(float(product['VENSL'])) / 100) * float(product['PRICE']), 2)
+                # 'coef': round((int(float(product['VENSL'])) / 100) * float(product['PRICE']), 2)
             }
 
     content = json.loads(response)
@@ -67,7 +67,7 @@ async def logics_operation(response, article):
     for product in content['RESP']:
         tasks.append(procces_product(product))
     processed_products = await asyncio.gather(*tasks)
-    sorted_dict = sorted(processed_products, key=lambda item: (item['coef']==0, item['coef']))
+    sorted_dict = sorted(processed_products, key=lambda item: (item['price']==0, float(item['price'])))
     
     # result = {
     #     str(article): sorted_dict[0]
@@ -85,10 +85,11 @@ async def logics_operation(response, article):
     #     ws.close()
     # except:
     #     pass
-    try:
-        await MyPrice.objects.filter(article = article.pk).aupdate(armtek = float(sorted_dict[0]['price']))
-    except:
-        await MyPrice.objects.filter(article = article.pk).aupdate(armtek = 0)
+    
+    # try:
+    await MyPrice.objects.filter(article = article.pk).aupdate(armtek = float(sorted_dict[0]['price']))
+    # except:
+    #     await MyPrice.objects.filter(article = article.pk).aupdate(armtek = 0)
 
     # article.armtek = float(sorted_dict[0]['price'])
     # await article.asave()

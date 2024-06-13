@@ -29,27 +29,30 @@ async def parce_carreta(url, params, json_data):
             await task
 
 async def logics_operation(response, article):
-    async def process_product(product):  
-        if not product['is_cross'] is False or product['period_max'] > 15  or product['qty'] == "Есть" or int(product['qty'].replace('>', '').replace('<', '').strip()) < 2 or (not product['stat'] is None and product['stat'] < 60):
-            return {'coef': 0}
-        else:
-            return {
-                    'brand': product['maker'],
-                    'name': product['name'],
-                    'code_source': product['source'],
-                    'quantity': product['qty'],
-                    'rating': product['stat'],
-                    'delivery': product['period_max'],
-                    'price': product['price'],
-                    'coef': round(float(product['stat'] / 100) * float(product['price']), 2)
+    # async def process_product(product):
+
+#  if item['is_cross'] == False and item['period_max'] <= 15 and item['qty'].replace('>', '').replace('<', '').strip().isdigit() and int(item['qty'].replace('>', '').replace('<', '').strip()) > 1 and not item['stat'] is None and item['stat'] >= 85 and item['maker'].lower() == maker.lower()
+#         if not product['is_cross'] is False or product['period_max'] > 15  or product['qty'] == "Есть" or int(product['qty'].replace('>', '').replace('<', '').strip()) < 2 or (not product['stat'] is None and product['stat'] < 85) or product is None or product['maker'].lower() != article.brand.lower().strip():
+#             return {'price': 0}
+#         else:
+#             return {
+#                     'brand': product['maker'],
+#                     'name': product['name'],
+#                     'code_source': product['source'],
+#                     'quantity': product['qty'],
+#                     'rating': product['stat'],
+#                     'delivery': product['period_max'],
+#                     'price': product['price'],
+#                     # 'coef': round(float(product['stat'] / 100) * float(product['price']), 2)
                 
-            }
-    tasks = []
+#             }
+#     tasks = []
     content = json.loads(response)
-    for product in content['objects']:
-        tasks.append(process_product(product))
-    processed_products = await asyncio.gather(*tasks)
-    sorted_dict = sorted(processed_products, key=lambda item: (item['coef']==0, item['coef']))
+    originals = [item for item in content['objects'] if item['is_cross'] == False and item['period_max'] <= 15 and item['qty'].replace('>', '').replace('<', '').strip().isdigit() and int(item['qty'].replace('>', '').replace('<', '').strip()) > 1 and not item['stat'] is None and item['stat'] >= 85 and item['maker'].lower().strip() == article.brand.lower().strip()]
+
+        # tasks.append(process_product(product))
+    # processed_products = await asyncio.gather(*tasks)
+    sorted_dict = sorted(originals, key=lambda item: float(item['price']))
     
     # result = {
     #     str(article): sorted_dict[0]
@@ -67,10 +70,11 @@ async def logics_operation(response, article):
     #     ws.close()
     # except:
     #     pass
-    try:
+    if len(sorted_dict) > 0:
         await MyPrice.objects.filter(article = article.pk).aupdate(carreta = float(sorted_dict[0]['price']))
-    except:
+    else:
         await MyPrice.objects.filter(article = article.pk).aupdate(carreta = 0)
+
     # article.carreta = float(sorted_dict[0]['price'])
     # await article.asave()
 

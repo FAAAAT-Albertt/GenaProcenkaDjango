@@ -113,8 +113,8 @@ def save_completed_products(data):
 
         IsCompletedProducts.objects.create(
             detail_data=products,
-            # price=detail[1]
-            price=4444.44
+            price=float(detail[1])
+
         ).save()
 
 def export_to_excel(request):

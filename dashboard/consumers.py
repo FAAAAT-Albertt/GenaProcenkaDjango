@@ -76,14 +76,15 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
     def simulate(self):
         base_thread = Thread(target=self.database_prices)
         base_thread.start()
-        amry_thread = Thread(target=self.start_amry, args=('amry',))
-        amry_thread.start()
+        # amry_thread = Thread(target=self.start_amry, args=('amry',))
+        # amry_thread.start()
         armtek_thread = Thread(target=self.start_amry, args=('armtek',))
         armtek_thread.start()
         carreta_thread = Thread(target=self.start_amry, args=('carreta',))
         carreta_thread.start()
         emex_thread = Thread(target=self.start_amry, args=('emex',))
         emex_thread.start()
+
         # percent = 0.5
         # while True:
         #     prices = MyPrice.objects.filter(send=False)
@@ -94,8 +95,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         #         price.emex = random.randint(int(price.buyPrice - price.buyPrice * percent), int(price.buyPrice + price.buyPrice * percent))
         #         price.save()
         #         time.sleep(0.4)
-
-            
+      
     def start_amry(self, site):
         if site == "amry":
             self.get_price_amry()
@@ -117,10 +117,10 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                     # row.save()
 
     def database_prices(self):
-        while self.i < 50:
+        while self.i < 60:
             prices = MyPrice.objects.filter(send=False)
             for price in prices:
-                if self.i < 50 and price.amry != 0 and price.armtek != 0 and price.carreta != 0 and price.emex != 0:
+                if self.i < 60 and price.emex != 0 and price.carreta != 0 and price.armtek != 0:
                     row = {
                         'detail' : price.detail,
                         'article' : price.article,
