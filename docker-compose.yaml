@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  nginx:
+    restart: always
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    depends_on:
+      - django
+    
+  django:
+    build:
+      context: .
+      dockerile: docker/python/DockerFile
+    container_name: django
+    command: daphne -b 0.0.0.0 -p 8000 setup.asgi:application
+    expose:
+      - 8000
+    restart: always

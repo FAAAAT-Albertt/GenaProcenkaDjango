@@ -1,0 +1,4 @@
+FROM python:3.12.3
+COPY ./full_app_build /var/www/mazda-ford.ru
+WORKDIR /var/www/mazda-ford.ru
+RUN pip3 install -r req.txt
