@@ -277,7 +277,7 @@ fileInput.addEventListener('change', function () {
             .then(data => {
                 console.log('Успех:', data);
                 fileUploadButton.textContent = 'Файл загружен';
-                window.socket = new WebSocket("ws://127.0.0.1:8000/ws_detail?from=site");
+                window.socket = new WebSocket("wss://mazda-ford.ru/ws_detail?from=site");
 
                 window.socket.onopen = function (e) {
                     console.log("[open] Соединение установлено");

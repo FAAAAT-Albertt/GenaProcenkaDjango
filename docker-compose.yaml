@@ -6,17 +6,31 @@ services:
     image: nginx:latest
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./docker/nginx/:/etc/nginx/conf.d/
+      - /etc/letsencrypt/live/mazda-ford.ru/fullchain.pem:/etc/nginx/cert.pem
+      - /etc/letsencrypt/live/mazda-ford.ru/privkey.pem:/etc/nginx/key.pem
+      - ./full_app_build/dashboard/static/:/var/www/mazda-ford.ru/static/
     depends_on:
       - django
-    
+
   django:
     build:
       context: .
-      dockerile: docker/python/DockerFile
+      dockerfile: docker/python/DockerFile
     container_name: django
     command: daphne -b 0.0.0.0 -p 8000 setup.asgi:application
     expose:
       - 8000
     restart: always
+
+  files:
+    build:
+      context: .
+      dockerfile: docker/python/DockerFile
+    container_name: files
+    command: python3 manage.py ftp_connect
+    restart: always
+
+  

@@ -47,7 +47,7 @@ async def logics_operation(response, article):
             delivery_min = ((late_date.year - now_date.year) * 365) + ((late_date.month - now_date.month) * 30) + (late_date.day - now_date.day)
             if delivery_min > 15: return {'price': 0}
             else: delivery = delivery_min
-        if int(product['RVALUE'].replace('>', '').replace('<', '').strip()) < 2 or int(float(product['VENSL'])) < 85:
+        if int(float(product['RVALUE'].replace('>', '').replace('<', '').strip())) < 2 or int(float(product['VENSL'])) < 85:
             return {
                 'price': 0
             }
