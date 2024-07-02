@@ -277,89 +277,7 @@ fileInput.addEventListener('change', function () {
             .then(data => {
                 console.log('Успех:', data);
                 fileUploadButton.textContent = 'Файл загружен';
-                window.socket = new WebSocket("wss://mazda-ford.ru/ws_detail?from=site");
-
-                window.socket.onopen = function (e) {
-                    console.log("[open] Соединение установлено");
-                };
-
-                window.socket.onmessage = function (event) {
-                    var message = JSON.parse(event.data);
-
-                    var detail_div_new = `<div class="item minName"><p class="itemText">${message.detail}</p></div>`
-                    var article_div_new = `<div class="item minName"><p class="itemText" name="article-data">${message.article}</p></div>`
-                    var price_div_new = `<div class="item minName"><p class="itemText">${message.price}</p></div>`
-                    var carreta_div_new = `<div class="item" id="carreta_${message.article}"><p class="itemText">${message.carreta}</p></div>`
-                    var amry_div_new = `<div class="item" id="amry_${message.article}"><p class="itemText">${message.amry}</p></div>`
-                    var armtek_div_new = `<div class="item" id="armtek_${message.article}"><p class="itemText">${message.armtek}</p></div>`
-                    var emex_div_new = `<div class="item" id="emex_${message.article}"><p class="itemText">${message.emex}</p></div>`
-                    var avg_div_new = `<div class="item itemFlex"><p class="itemText" name="maybe-price" id="avg_${message.article}">-</p><p class="procent" id="#">0%</p></div>`
-                    var change_div_new = `<div class="item minName"><input class="itemText" name="new-price" type="text" placeholder="Введите сумму"></div>`
-                    div_detail.insertAdjacentHTML('beforeend', detail_div_new);
-                    div_article.insertAdjacentHTML('beforeend', article_div_new);
-                    div_price.insertAdjacentHTML('beforeend', price_div_new);
-                    div_carreta.insertAdjacentHTML('beforeend', carreta_div_new);
-                    div_amry.insertAdjacentHTML('beforeend', amry_div_new);
-                    div_armtek.insertAdjacentHTML('beforeend', armtek_div_new);
-                    div_emex.insertAdjacentHTML('beforeend', emex_div_new);
-                    div_avg_price.insertAdjacentHTML('beforeend', avg_div_new);
-                    div_change_price.insertAdjacentHTML('beforeend', change_div_new);
-
-                    console.log(`[message] Данные получены с сервера: ${event.data}`);
-                    // Получение всех цен из строки
-                    var carreta = "carreta_" + message.article;
-                    var amry = "amry_" + message.article;
-                    var armtek = "armtek_" + message.article;
-                    const carreta_div = document.getElementById(carreta);
-                    const amry_div = document.getElementById(amry);
-                    const armtek_div = document.getElementById(armtek);
-
-                    if (carreta_div != null) {
-                        var carreta_price = parseFloat(carreta_div.innerText);
-                    } else {
-                        var carreta_price = parseFloat(100000.12);
-                    }
-
-                    if (amry_div != null) {
-                        var amry_price = parseFloat(amry_div.innerText);
-                    } else {
-                        var amry_price = parseFloat(100000.12);
-                    }
-
-                    if (armtek_div != null) {
-                        var armtek_price = parseFloat(armtek_div.innerText);
-                    } else {
-                        var armtek_price = parseFloat(100000.12);
-                    }
-                    // *
-
-
-                    // Выбор минимальной цены
-                    const min_price = Math.min.apply(null, [carreta_price, amry_price, armtek_price])
-
-                    if (min_price === amry_price) {
-                        amry_div.style.backgroundColor = "#5b752d";
-                        carreta_div.style.backgroundColor = "#313946";
-                        armtek_div.style.backgroundColor = "#313946";
-                    } else if (min_price === carreta_price) {
-                        amry_div.style.backgroundColor = "#313946";
-                        carreta_div.style.backgroundColor = "#5b752d";
-                        armtek_div.style.backgroundColor = "#313946";
-                    } else if (min_price === armtek_price) {
-                        amry_div.style.backgroundColor = "#313946";
-                        carreta_div.style.backgroundColor = "#313946";
-                        armtek_div.style.backgroundColor = "#5b752d";
-                    }
-                    // *
-
-                    // Расчет средней цены
-                    var avg_price = ((carreta_price + amry_price + armtek_price) / 3).toFixed(2);
-                    var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price / 10) + 5 / 10) * 10 : (Math.round(parseInt(avg_price / 10) + round_avg / 10)) * 10;
-                    const avg_div = document.getElementById("avg_" + message.article);
-                    avg_div.innerText = round_avg;
-                    window.price_avg[message.article] = round_avg;
-                    // *
-                }
+                connect(true);
             })
             .catch((error) => {
                 console.error('Ошибка:', error);
@@ -403,4 +321,102 @@ function nextPage() {
     });
 
     window.socket.send(JSON.stringify({ 'message': "next_page" }));
+}
+
+function connect(first) {
+    if (first) {
+        window.socket = new WebSocket("wss://mazda-ford.ru/ws_detail?from=site");
+    } else {
+        window.socket = new WebSocket("wss://mazda-ford.ru/ws_detail");
+    }
+
+    window.socket.onopen = function (e) {
+        console.log("[open] Соединение установлено");
+    };
+
+    window.socket.onmessage = function (event) {
+        var message = JSON.parse(event.data);
+
+        var detail_div_new = `<div class="item minName"><p class="itemText">${message.detail}</p></div>`
+        var article_div_new = `<div class="item minName"><p class="itemText" name="article-data">${message.article}</p></div>`
+        var price_div_new = `<div class="item minName"><p class="itemText">${message.price}</p></div>`
+        var carreta_div_new = `<div class="item" id="carreta_${message.article}"><p class="itemText">${message.carreta}</p></div>`
+        var amry_div_new = `<div class="item" id="amry_${message.article}"><p class="itemText">${message.amry}</p></div>`
+        var armtek_div_new = `<div class="item" id="armtek_${message.article}"><p class="itemText">${message.armtek}</p></div>`
+        var emex_div_new = `<div class="item" id="emex_${message.article}"><p class="itemText">${message.emex}</p></div>`
+        var avg_div_new = `<div class="item itemFlex"><p class="itemText" name="maybe-price" id="avg_${message.article}">-</p><p class="procent" id="#">0%</p></div>`
+        var change_div_new = `<div class="item minName"><input class="itemText" name="new-price" type="text" placeholder="Введите сумму"></div>`
+        div_detail.insertAdjacentHTML('beforeend', detail_div_new);
+        div_article.insertAdjacentHTML('beforeend', article_div_new);
+        div_price.insertAdjacentHTML('beforeend', price_div_new);
+        div_carreta.insertAdjacentHTML('beforeend', carreta_div_new);
+        div_amry.insertAdjacentHTML('beforeend', amry_div_new);
+        div_armtek.insertAdjacentHTML('beforeend', armtek_div_new);
+        div_emex.insertAdjacentHTML('beforeend', emex_div_new);
+        div_avg_price.insertAdjacentHTML('beforeend', avg_div_new);
+        div_change_price.insertAdjacentHTML('beforeend', change_div_new);
+
+        console.log(`[message] Данные получены с сервера: ${event.data}`);
+        // Получение всех цен из строки
+        var carreta = "carreta_" + message.article;
+        var amry = "amry_" + message.article;
+        var armtek = "armtek_" + message.article;
+        const carreta_div = document.getElementById(carreta);
+        const amry_div = document.getElementById(amry);
+        const armtek_div = document.getElementById(armtek);
+
+        if (carreta_div != null) {
+            var carreta_price = parseFloat(carreta_div.innerText);
+        } else {
+            var carreta_price = parseFloat(100000.12);
+        }
+
+        if (amry_div != null) {
+            var amry_price = parseFloat(amry_div.innerText);
+        } else {
+            var amry_price = parseFloat(100000.12);
+        }
+
+        if (armtek_div != null) {
+            var armtek_price = parseFloat(armtek_div.innerText);
+        } else {
+            var armtek_price = parseFloat(100000.12);
+        }
+        // *
+
+
+        // Выбор минимальной цены
+        const min_price = Math.min.apply(null, [carreta_price, amry_price, armtek_price])
+
+        if (min_price === amry_price) {
+            amry_div.style.backgroundColor = "#5b752d";
+            carreta_div.style.backgroundColor = "#313946";
+            armtek_div.style.backgroundColor = "#313946";
+        } else if (min_price === carreta_price) {
+            amry_div.style.backgroundColor = "#313946";
+            carreta_div.style.backgroundColor = "#5b752d";
+            armtek_div.style.backgroundColor = "#313946";
+        } else if (min_price === armtek_price) {
+            amry_div.style.backgroundColor = "#313946";
+            carreta_div.style.backgroundColor = "#313946";
+            armtek_div.style.backgroundColor = "#5b752d";
+        }
+        // *
+
+        // Расчет средней цены
+        var avg_price = ((carreta_price + amry_price + armtek_price) / 3).toFixed(2);
+        var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price / 10) + 5 / 10) * 10 : (Math.round(parseInt(avg_price / 10) + round_avg / 10)) * 10;
+        const avg_div = document.getElementById("avg_" + message.article);
+        avg_div.innerText = round_avg;
+        window.price_avg[message.article] = round_avg;
+        // *
+    }
+
+    window.socket.onclose = function (e) {
+        console.log("[close] Соединение закрыто");
+        alert("Переподключение WebSocket, подождите и повторите свои действия");
+        setTimeout(function() {
+            connect(false);
+          }, 1000);
+    };
 }

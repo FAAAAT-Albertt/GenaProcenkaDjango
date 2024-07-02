@@ -15,6 +15,11 @@ services:
     depends_on:
       - django
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
   django:
     build:
       context: .
@@ -24,6 +29,10 @@ services:
     expose:
       - 8000
     restart: always
+    depends_on:
+      - redis
+    links:
+      - redis
 
   files:
     build:

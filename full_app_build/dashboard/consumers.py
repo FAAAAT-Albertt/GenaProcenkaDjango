@@ -43,7 +43,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         self.parse = False
-        # await MyPrice.objects.all().adelete()
+        await MyPrice.objects.all().adelete()
 
     async def receive(self, text_data):
         data = json.loads(text_data)
