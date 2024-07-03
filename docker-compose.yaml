@@ -31,6 +31,7 @@ services:
     restart: always
     depends_on:
       - redis
+      - pgdb
     links:
       - redis
 
@@ -42,4 +43,16 @@ services:
     command: python3 manage.py ftp_connect
     restart: always
 
+  pgdb:
+    image: postgres
+    environment:
+      - POSTGRES_DB=meetell
+      - POSTGRES_USER=postgres_meetell
+      - POSTGRES_PASSWORD=meecv32tell
+    container_name: pgdb
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data/
+
+volumes:
+  pgdbdata: null
   

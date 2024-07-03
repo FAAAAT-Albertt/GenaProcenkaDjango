@@ -39,6 +39,7 @@ class Command(BaseCommand):
 
     def database_work(self):
         # for file in ['Amry2', 'Amry4', 'Amry6']:
+        DetailAmry.objects.all().delete()
         for file in ['Amry4', 'Amry6']:
             df = pd.read_csv(f'temp_files/{file}.csv',delimiter=';', encoding='cp1251')
             result = df.to_numpy()

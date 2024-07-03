@@ -81,14 +81,14 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         amry_thread.start()
         armtek_thread = Thread(target=self.start_amry, args=('armtek',))
         armtek_thread.start()
-        carreta_thread = Thread(target=self.start_amry, args=('carreta',))
-        carreta_thread.start()
+        # carreta_thread = Thread(target=self.start_amry, args=('carreta',))
+        # carreta_thread.start()
         emex_thread = Thread(target=self.start_amry, args=('emex',))
         emex_thread.start()
 
         amry_thread.join()
         armtek_thread.join()
-        carreta_thread.join()
+        # carreta_thread.join()
         emex_thread.join()
 
         self.send_rows()
