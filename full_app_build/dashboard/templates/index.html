@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link href="{% static '/css/style.css' %}" rel=" stylesheet" />
+</head>
+
+<body>
+    <h1>Проценка</h1>
+    <table>
+        <tr>
+            <th>Артикул</th>
+            <th>Деталь</th>
+            <th>Цена</th>
+        </tr>
+        {% for key, value in details.items %}
+        <tr>
+            <td>{{value.article}}</td>
+            <td>{{value.detail}}</td>
+            <td>{{value.price}}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</body>
+
+</html>

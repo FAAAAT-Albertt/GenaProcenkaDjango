@@ -1,0 +1,231 @@
+{% load static %}
+{% load filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static '/css/dashboard.css' %}" rel="stylesheet" />
+    <title>Проценка</title>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="checkbox" id="detail">
+            <div class="name minName">
+                <p class="nameText">
+                    Деталь
+                </p>
+            </div>
+
+            {% for value in details %}
+            <div class="item minName">
+                <p class="itemText">
+                    {{value.Detail}}
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox" id="article">
+            <div class="name minName">
+                <p class="nameText">
+                    Артикул
+                </p>
+            </div>
+
+            {% for value in details %}
+            <div class="item minName">
+                <p class="itemText" name="article-data">
+                    {{value.Article}} - {{ value.Price|multiply_and_round }}
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox" id="price">
+            <div class="name minName">
+                <p class="nameText">
+                    Цена
+                </p>
+            </div>
+
+            {% for value in details %}
+            <div class="item minName">
+                <p class="itemText">
+                    {{ value.BuyPrice }} - {{ value.BuyPrice }}
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox" id="carreta">
+            <div class="name">
+                <p class="nameText" id="carreta-id" style="display: block;">
+                    Закуп<br>Carreta.ru
+                </p>
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
+                    <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
+                    <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
+                    <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
+                </div>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div> -->
+            </div>
+
+            {% for value in details %}
+            <div class="item" id="carreta_{{ value.Article }}">
+                <p class="itemText">
+                    0.0
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox" id="amry">
+            <div class="name">
+                <p class="nameText" id="amry-id" style="display: block;">
+                    Закуп<br>Amry.ru
+                </p>
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
+                    <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
+                    <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
+                    <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
+                </div>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div> -->
+            </div>
+
+            {% for value in details %}
+            <div class="item" id="amry_{{ value.Article }}">
+                <p class="itemText">
+                    0.0
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox" id="armtek">
+            <div class="name">
+                <p class="nameText" id="armtek-id" style="display: block;">
+                    Закуп<br>Armtek.ru
+                </p>
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
+                    <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
+                    <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
+                    <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
+                </div>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div> -->
+            </div>
+
+            {% for value in details %}
+            <div class="item" id="armtek_{{ value.Article }}">
+                <p class="itemText">
+                    0.0
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox" id="emex">
+            <div class="name">
+                <p class="nameText" id="emex-id" style="display: block;">
+                    Розница<br>Emex.ru
+                </p>
+                <!-- <div class="filterCheck inputWithFilter" style="display: none;">
+                    <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
+                    <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1" id="filterNumber">
+                    <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
+                </div>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}" alt=""></button>
+                </div> -->
+            </div>
+
+            {% for value in details %}
+            <div class="item" id="emex_{{ value.Article }}">
+                <p class="itemText">
+                    0.0
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="checkbox" id="avg_price">
+            <div class="name">
+                <p class="nameText textWithFilter" id="avgPrice-id" style="display: block;">
+                    Предложенная цена
+                </p>
+                <div class="filterCheck inputWithFilter" style="display: none;">
+                    <button class="btnPlusMinus"><img src="{% static '/img/minus.svg' %}" alt=""></button>
+                    <input class="filterNumber" type="number" name="number" min="1" max="100" step="1" value="1"
+                        id="filterNumber">
+                    <button class="btnPlusMinus"><img src="{% static '/img/plus.svg' %}" alt=""></button>
+                </div>
+                <div class="buttonFilter">
+                    <button class="filter" id="btn-filter"><img src="{% static '/img/gala--settings.svg' %}"
+                            alt=""></button>
+                </div>
+            </div>
+
+            {% for value in details %}
+            <div class="item itemFlex">
+                <p class="itemText" name="maybe-price" id="avg_{{ value.Article }}">
+                    -
+                </p>
+                <p class="procent" id="#">20%</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="checkbox" id="change_price">
+            <div class="name minName">
+                <p class="nameText">
+                    Изменить цену
+                </p>
+            </div>
+
+            {% for value in details %}
+            <div class="item minName">
+                <input class="itemText" name="new-price" type="text" placeholder="Введите сумму">
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <div class="buttons">
+        <button class="btn">
+            Отменить фильтры
+        </button>
+        <button type="submit" class="btn" id="file-upload-button">
+            Добавить файл
+        </button>
+        <input type="file" name="down_file" id="file-input" style="display: none;">
+        <div class="changeButton">
+            <button class="btnPrev">
+                <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+            </button>
+            <button class="btn btn-primary" id="export-button">
+                Отправить выгрузку
+            </button>
+            <button class="btnNext">
+                <img src="{% static '/img/fluent--ios-arrow-24-filled.svg' %}" alt="">
+            </button>
+        </div>
+        <button class="btn" id="add-page-button">
+            Добавить страницу
+        </button>
+        <button class="btn" id="apply_filter">
+            Применить фильтры
+        </button>
+    </div>
+
+    <script src="{% static '/js/scripts.js' %}"></script>
+</body>
+
+</html>
