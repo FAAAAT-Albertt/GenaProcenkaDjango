@@ -82,27 +82,27 @@ ASGI_APPLICATION = "setup.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'procenka',
-        'USER': 'python',
-        'PASSWORD': 'it_236_comp',
-        'HOST': 'it-prod.pro',
-        'PORT': '5432'
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',   # Используется PostgreSQL
-#         'NAME': 'meetell', # Имя базы данных
-#         'USER': 'postgres_meetell', # Имя пользователя
-#         'PASSWORD': 'meecv32tell', # Пароль пользователя
-#         'HOST': 'pgdb', # Наименование контейнера для базы данных в Docker Compose
-#         'PORT': '5432',  # Порт базы данных
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'procenka',
+#         'USER': 'python',
+#         'PASSWORD': 'it_236_comp',
+#         'HOST': 'it-prod.pro',
+#         'PORT': '5432'
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',   # Используется PostgreSQL
+        'NAME': 'meetell', # Имя базы данных
+        'USER': 'postgres_meetell', # Имя пользователя
+        'PASSWORD': 'meecv32tell', # Пароль пользователя
+        'HOST': 'pgdb', # Наименование контейнера для базы данных в Docker Compose
+        'PORT': '5432',  # Порт базы данных
+    }
+}
 
 
 # Password validation
@@ -156,20 +156,20 @@ REST_FRAMEWORK = {
 # STATIC_URL = '/dashboard/static/'
 
 # Конфигурация Channels
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('redis',6379)],
-#         },
-#     },
-# }
-
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis',6379)],
+        },
+    },
 }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
 
 
 MEDIA_URL = '/media/'

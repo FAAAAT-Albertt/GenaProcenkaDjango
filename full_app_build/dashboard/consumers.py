@@ -79,16 +79,16 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         # base_thread.start()
         amry_thread = Thread(target=self.start_amry, args=('amry',))
         amry_thread.start()
-        # armtek_thread = Thread(target=self.start_amry, args=('armtek',))
-        # armtek_thread.start()
-        # emex_thread = Thread(target=self.start_amry, args=('emex',))
-        # emex_thread.start()
+        armtek_thread = Thread(target=self.start_amry, args=('armtek',))
+        armtek_thread.start()
+        emex_thread = Thread(target=self.start_amry, args=('emex',))
+        emex_thread.start()
 
 
         self.send_ready_rows()
         amry_thread.join()
-        # armtek_thread.join()
-        # emex_thread.join()
+        armtek_thread.join()
+        emex_thread.join()
 
 
 
@@ -145,8 +145,8 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         else:
             page_size = 50
         while self.i < page_size:
-            # prices = MyPrice.objects.filter(send=False, amry_done=True, armtek_done = True, emex_done = True)
-            prices = MyPrice.objects.filter(send=False, amry_done=True)
+            prices = MyPrice.objects.filter(send=False, amry_done=True, armtek_done = True, emex_done = True)
+            # prices = MyPrice.objects.filter(send=False, amry_done=True)
             for price in prices:
                 if self.i < page_size:
                     row = {
