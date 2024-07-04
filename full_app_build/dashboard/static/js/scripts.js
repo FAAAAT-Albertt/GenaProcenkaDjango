@@ -325,9 +325,9 @@ function nextPage() {
 
 function connect(first) {
     if (first) {
-        window.socket = new WebSocket("wss://mazda-ford.ru/ws_detail?from=site");
+        window.socket = new WebSocket("/ws_detail?from=site");
     } else {
-        window.socket = new WebSocket("wss://mazda-ford.ru/ws_detail");
+        window.socket = new WebSocket("/ws_detail");
     }
 
     window.socket.onopen = function (e) {
@@ -344,7 +344,7 @@ function connect(first) {
         var amry_div_new = `<div class="item" id="amry_${message.article}"><p class="itemText">${message.amry}</p></div>`
         var armtek_div_new = `<div class="item" id="armtek_${message.article}"><p class="itemText">${message.armtek}</p></div>`
         var emex_div_new = `<div class="item" id="emex_${message.article}"><p class="itemText">${message.emex}</p></div>`
-        var avg_div_new = `<div class="item itemFlex"><p class="itemText" name="maybe-price" id="avg_${message.article}">-</p><p class="procent" id="#">0%</p></div>`
+        var avg_div_new = `<div class="item itemFlex"><p class="itemText" name="maybe-price" id="avg_${message.article}">-</p><p class="procent" id="#">40%</p></div>`
         var change_div_new = `<div class="item minName"><input class="itemText" name="new-price" type="text" placeholder="Введите сумму"></div>`
         div_detail.insertAdjacentHTML('beforeend', detail_div_new);
         div_article.insertAdjacentHTML('beforeend', article_div_new);
@@ -408,7 +408,7 @@ function connect(first) {
         // var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price / 10) + 5 / 10) * 10 : (Math.round(parseInt(avg_price / 10) + round_avg / 10)) * 10;
         const avg_div = document.getElementById("avg_" + message.article);
         avg_div.innerText = min_price * 1.4; // NEW
-        window.price_avg[message.article] = round_avg;
+        window.price_avg[message.article] = min_price * 1.4;
         // *
     }
 
