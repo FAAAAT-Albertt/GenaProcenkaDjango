@@ -89,9 +89,13 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
 
         self.send_ready_rows()
         amry_thread.join()
+        MyPrice.objects.all().update(amry_done = True)
         armtek_thread.join()
+        MyPrice.objects.all().update(armtek_done = True)
         emex_thread.join()
+        MyPrice.objects.all().update(emex_done = True)
         favorit_thread.join()
+        MyPrice.objects.all().update(favorit_done = True)
 
 
 

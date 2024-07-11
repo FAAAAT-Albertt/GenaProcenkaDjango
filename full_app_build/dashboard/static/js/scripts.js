@@ -84,7 +84,9 @@ function resetFilters() {
     Object.entries(window.price_avg).forEach(([key, value]) => {
         try {
             var div = document.getElementById("avg_" + key);
-            div.textContent = value * 1.4;
+            value = value * 1.4;
+            var round_avg = (round_avg = value % 10) <= 5 ? (parseInt(value / 10) + 5 / 10) * 10 : (Math.round(parseInt(value / 10) + round_avg / 10)) * 10;
+            div.textContent = round_avg;
             var parrent = div.parentElement;
             var perc = parrent.querySelector(".procent");
             perc.textContent = "40%"; // NEW
@@ -121,7 +123,7 @@ function applyFilters() {
             let i = 0;
             itemTextes.forEach(function (itemText) {
                 var currentPrice = parseFloat(itemText.innerText);
-                var newPrice = currentPrice * 1.4 * (1 + percentage / 100); // NEW
+                var newPrice = currentPrice * (1 + percentage / 100); // NEW
                 var round_avg = (round_avg = newPrice % 10) <= 5 ? (parseInt(newPrice / 10) + 5 / 10) * 10 : (Math.round(parseInt(newPrice / 10) + round_avg / 10)) * 10;
 
 
@@ -412,7 +414,7 @@ function connect(first) {
         var avg_price = min_price * 1.4;
         var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price / 10) + 5 / 10) * 10 : (Math.round(parseInt(avg_price / 10) + round_avg / 10)) * 10;
         avg_div.innerText = round_avg; // NEW
-        window.price_avg[message.article] = round_avg;
+        window.price_avg[message.article] = min_price;
         // *
     }
 
