@@ -386,7 +386,9 @@ function connect(first) {
 
 
         // Выбор минимальной цены
-        const min_price = Math.min.apply(null, [carreta_price, amry_price, armtek_price])
+        const prices = [carreta_price, amry_price, armtek_price];
+        const filteredPrices = prices.filter(price => price > 0);
+        const min_price = Math.min.apply(null, filteredPrices);
 
         if (min_price === amry_price) {
             amry_div.style.backgroundColor = "#5b752d";
@@ -407,8 +409,10 @@ function connect(first) {
         // var avg_price = ((carreta_price + amry_price + armtek_price) / 3).toFixed(2);
         // var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price / 10) + 5 / 10) * 10 : (Math.round(parseInt(avg_price / 10) + round_avg / 10)) * 10;
         const avg_div = document.getElementById("avg_" + message.article);
-        avg_div.innerText = min_price * 1.4; // NEW
-        window.price_avg[message.article] = min_price * 1.4;
+        var avg_price = min_price * 1.4;
+        var round_avg = (round_avg = avg_price % 10) <= 5 ? (parseInt(avg_price / 10) + 5 / 10) * 10 : (Math.round(parseInt(avg_price / 10) + round_avg / 10)) * 10;
+        avg_div.innerText = round_avg; // NEW
+        window.price_avg[message.article] = round_avg;
         // *
     }
 

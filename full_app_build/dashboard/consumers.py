@@ -10,9 +10,8 @@ from django.db.models.functions import Lower
 from channels.exceptions import DenyConnection
 from .models import DetailAmry, MyPrice
 
-from .api import amry_api
 from .api import armtek_api
-from .api import carreta_api
+from .api import favorit_api
 from .api import emex_api
 
 class DetailConsumer(AsyncJsonWebsocketConsumer):
@@ -53,6 +52,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                 self.page += 1
                 if self.page <= self.max_page:
                     base_thread = Thread(target=self.database_price_page)
+                    
                     base_thread.start()
                 else:
                     base_thread = Thread(target=self.send_ready_rows)
@@ -77,18 +77,21 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
     def simulate(self):
         # base_thread = Thread(target=self.database_prices)
         # base_thread.start()
-        amry_thread = Thread(target=self.start_amry, args=('amry',))
+        amry_thread = Thread(target=self.start_amry, args=('amry',), name="Amry")
         amry_thread.start()
-        armtek_thread = Thread(target=self.start_amry, args=('armtek',))
+        armtek_thread = Thread(target=self.start_amry, args=('armtek',), name="ArmTek")
         armtek_thread.start()
-        emex_thread = Thread(target=self.start_amry, args=('emex',))
+        emex_thread = Thread(target=self.start_amry, args=('emex',), name="Emex")
         emex_thread.start()
+        favorit_thread = Thread(target=self.start_amry, args=('favorit',), name="Favorit")
+        favorit_thread.start()
 
 
         self.send_ready_rows()
         amry_thread.join()
         armtek_thread.join()
         emex_thread.join()
+        favorit_thread.join()
 
 
 
@@ -97,8 +100,8 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
             self.get_price_amry()
         elif site == "armtek":
             asyncio.run(armtek_api.main())
-        elif site == "carreta":
-            asyncio.run(carreta_api.main())
+        elif site == "favorit":
+            asyncio.run(favorit_api.main())
         elif site == "emex":
             asyncio.run(emex_api.main())
 
@@ -130,7 +133,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                 'detail' : price.detail,
                 'article' : price.article,
                 'price' : f"{price.buyPrice} - {round(price.buyPrice * 1.4 / 5) * 5}",
-                'carreta' : price.carreta,
+                'carreta' : price.favorit,
                 'amry' : price.amry,
                 'armtek' : price.armtek,
                 'emex' : price.emex
@@ -145,7 +148,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         else:
             page_size = 50
         while self.i < page_size:
-            prices = MyPrice.objects.filter(send=False, amry_done=True, armtek_done = True, emex_done = True)
+            prices = MyPrice.objects.filter(send=False, amry_done=True, armtek_done = True, emex_done = True, favorit_done = True)
             # prices = MyPrice.objects.filter(send=False, amry_done=True)
             for price in prices:
                 if self.i < page_size:
@@ -153,7 +156,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                         'detail' : price.detail,
                         'article' : price.article,
                         'price' : f"{price.buyPrice} - {round(price.buyPrice * 1.4 / 5) * 5}",
-                        'carreta' : price.carreta,
+                        'carreta' : price.favorit,
                         'amry' : price.amry,
                         'armtek' : price.armtek,
                         'emex' : price.emex
