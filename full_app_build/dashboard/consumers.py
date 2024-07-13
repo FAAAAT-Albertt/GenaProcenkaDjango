@@ -24,7 +24,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
         """Функция подключения клиента к WebSocket"""
         await self.channel_layer.group_add(
             "group",
-            self.channel_name
+            "group_site"
         )
 
         await self.accept()
@@ -61,7 +61,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
             elif data["message"] == "prev_page":
                 self.i = 0
                 self.page -= 1
-                if self.page == 0:
+                if self.page <= 0:
                     self.page = 1
                 base_thread = Thread(target=self.database_price_page)
                 base_thread.start()
@@ -142,6 +142,7 @@ class DetailConsumer(AsyncJsonWebsocketConsumer):
                 'armtek' : price.armtek,
                 'emex' : price.emex
             }
+            time.sleep(0.1)
             asyncio.run(self.send(json.dumps(row)))    
 
     def send_ready_rows(self):

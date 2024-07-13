@@ -28,7 +28,7 @@ async def emex_parce(article) -> None:
     detail_nums_to_load = None
 
     httpx_client = httpx.AsyncClient(auth=(login, password))
-    async with AsyncClient('http://ws.emex.ru/EmExService.asmx?WSDL', transport=AsyncTransport(httpx_client)) as client:
+    async with AsyncClient('http://ws.emex.ru/EmExService.asmx?WSDL', transport=AsyncTransport(httpx_client, timeout=20)) as client:
         response = await client.service.FindDetailAdv4(
             login=login,
             password=password,
@@ -101,7 +101,8 @@ async def main():
 
 @sync_to_async
 def get_all_support() -> list:
-    return list(MyPrice.objects.filter(send=False, emex=0))
+    # return list(MyPrice.objects.filter(send=False, emex=0))
+    return list(MyPrice.objects.all())
 
     
 if __name__ == "__main__":
